@@ -1,0 +1,2547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Advanced AI | Premium Neural Interface</title>
+    
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter for premium typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons for elegant, thin-line iconography -->
+    <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2"></script>
+    
+    <!-- Marked.js for perfect Markdown Parsing without raw symbols -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        veltrix: {
+                            900: '#030305',
+                            800: '#0a0a0f',
+                            700: '#12121a',
+                            glow: '#8b5cf6',
+                            cyan: '#06b6d4'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.16, 1, 0.3, 1) infinite',
+                        'float': 'float 8s cubic-bezier(0.25, 1, 0.2, 1) infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                        'ripple': 'ripple 1.8s cubic-bezier(0, 0, 0.2, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translate3d(0, 0, 0) scale3d(1, 1, 1)' },
+                            '50%': { transform: 'translate3d(0, -12px, 0) scale3d(1.02, 1.02, 1)' },
+                        },
+                        ripple: {
+                            '0%': { transform: 'scale3d(0.8, 0.8, 1)', opacity: '1' },
+                            '100%': { transform: 'scale3d(2.4, 2.4, 1)', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --glass-bg: rgba(15, 15, 20, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --ios-spring: cubic-bezier(0.16, 1, 0.3, 1);
+            --font-scale: 1rem;
+            
+            /* Dynamic UI Theme Colors */
+            --theme-from: #7c3aed;
+            --theme-to: #8b5cf6;
+            --theme-glow: rgba(139, 92, 246, 0.3);
+
+            /* Dynamic Theme Variables */
+            --app-bg: #000000;
+            --app-text: #e2e8f0;
+            --app-font: 'Inter', sans-serif;
+            --border-radius-base: 24px;
+            --blur-amount: 24px;
+        }
+
+        .focus-glow {
+            border-color: var(--theme-from) !important;
+            box-shadow: 0 0 35px var(--theme-glow) !important;
+            transform: translateY(-2px);
+        }
+
+        body {
+            background-color: var(--app-bg);
+            color: var(--app-text);
+            font-family: var(--app-font);
+            overflow: hidden; 
+            font-size: var(--font-scale);
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 1.5s var(--ios-spring), color 1.5s var(--ios-spring);
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur-amount)) saturate(190%);
+            -webkit-backdrop-filter: blur(var(--blur-amount)) saturate(190%);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: var(--border-radius-base);
+            transform: translate3d(0, 0, 0); 
+            backface-visibility: hidden;
+            perspective: 1000px;
+            will-change: transform, opacity, backdrop-filter;
+            transition: all 0.8s var(--ios-spring);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            will-change: transform;
+            transition: all 0.3s var(--ios-spring);
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+            transform: translate3d(0, -2px, 0) scale3d(1.02, 1.02, 1);
+        }
+        
+        .glass-button:active {
+            transform: translate3d(0, 0, 0) scale3d(0.96, 0.96, 1);
+        }
+
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.06); border-radius: 10px; transition: background 0.3s ease; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+
+        .msg-ai {
+            background: linear-gradient(145deg, rgba(25, 25, 35, 0.7), rgba(15, 15, 25, 0.7));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-base) var(--border-radius-base) var(--border-radius-base) 8px;
+            backdrop-filter: blur(10px);
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            will-change: transform, opacity;
+            transition: all 0.9s var(--ios-spring);
+        }
+
+        .msg-user {
+            background: linear-gradient(135deg, var(--theme-from), var(--theme-to));
+            box-shadow: 0 4px 20px var(--theme-glow);
+            border-radius: var(--border-radius-base) var(--border-radius-base) 8px var(--border-radius-base);
+            color: white;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            will-change: transform, opacity;
+            transition: all 0.9s var(--ios-spring);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--theme-from), var(--theme-to));
+            box-shadow: 0 4px 15px var(--theme-glow);
+            transform: translate3d(0, 0, 0);
+            will-change: transform;
+        }
+
+        .dot-typing {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #c4b5fd;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .dot-typing:nth-child(1) { animation-delay: -0.32s; }
+        .dot-typing:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale3d(0, 0, 1); }
+            40% { transform: scale3d(1, 1, 1); box-shadow: 0 0 10px rgba(196, 181, 253, 0.8); }
+        }
+
+        @keyframes soundwave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+        .soundwave-bar {
+            width: 3px;
+            height: 16px;
+            background-color: #ef4444;
+            border-radius: 99px;
+            animation: soundwave 1.2s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        #sidebar-container {
+            transform: translate3d(-100%, 0, 0);
+            transition: transform 0.4s var(--ios-spring);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+        #sidebar-container.open {
+            transform: translate3d(0, 0, 0);
+        }
+
+        .overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.6);
+            will-change: opacity;
+        }
+        .overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .listening-glow {
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.45) !important;
+            border-color: rgba(239, 68, 68, 0.55) !important;
+        }
+
+        .attachment-chip {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: white;
+            min-width: 200px;
+        }
+        .attachment-chip img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .message-content h1 { font-size: 1.5em; font-weight: 700; color: #fff; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .message-content h2 { font-size: 1.25em; font-weight: 700; color: #fff; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .message-content h3 { font-size: 1.125em; font-weight: 600; color: #fff; margin-top: 0.75rem; margin-bottom: 0.5rem; }
+        .message-content p { margin-bottom: 0.75rem; line-height: 1.62; word-break: break-word; }
+        .message-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 0.75rem; }
+        .message-content ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 0.75rem; }
+        .message-content li { margin-bottom: 0.25rem; }
+        .message-content strong { color: #fff; font-weight: 600; }
+        .message-content em { font-style: italic; color: #cbd5e1; }
+        
+        pre { background: #08080c; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin: 12px 0; overflow-x: auto; }
+        code { font-family: 'Courier New', Courier, monospace; color: #c4b5fd; font-size: 0.9em; }
+        
+        details summary::-webkit-details-marker { display: none; }
+        details summary { list-style: none; }
+        details[open] summary ~ * { animation: enter 0.3s var(--ios-spring); }
+
+        .animate-enter { 
+            animation: enter 0.5s var(--ios-spring) forwards;
+            opacity: 0;
+            transform: translate3d(0, 15px, 0);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+        }
+        @keyframes enter { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
+        #theme-ripple {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 10vw;
+            height: 10vw;
+            transform: translate3d(-50%, -50%, 0) scale3d(0, 0, 1);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+        .animate-theme-ripple {
+            animation: themeRippleAnim 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes themeRippleAnim {
+            0% { transform: translate3d(-50%, -50%, 0) scale3d(0, 0, 1); opacity: 0.8; }
+            40% { opacity: 0.6; }
+            100% { transform: translate3d(-50%, -50%, 0) scale3d(35, 35, 1); opacity: 0; }
+        }
+
+        #preview-modal-content {
+            transition: transform 0.5s var(--ios-spring), opacity 0.5s var(--ios-spring), border-radius 0.5s var(--ios-spring), width 0.5s var(--ios-spring), height 0.5s var(--ios-spring);
+            will-change: transform, opacity, width, height;
+            backface-visibility: hidden;
+        }
+        @keyframes float-window {
+            0%, 100% { transform: scale3d(1, 1, 1) translate3d(0, 0, 0); }
+            50% { transform: scale3d(1.004, 1.004, 1) translate3d(0, -5px, 0); }
+        }
+        .animate-float-window {
+            animation: float-window 8s ease-in-out infinite;
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preview-enter {
+            animation: previewEnterAnim 0.45s var(--ios-spring) forwards;
+        }
+        .preview-exit {
+            animation: previewExitAnim 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes previewEnterAnim {
+            0% { transform: scale3d(0.92, 0.92, 1) translate3d(0, 30px, 0); opacity: 0; }
+            100% { transform: scale3d(1, 1, 1) translate3d(0, 0, 0); opacity: 1; }
+        }
+        @keyframes previewExitAnim {
+            0% { transform: scale3d(1, 1, 1) translate3d(0, 0, 0); opacity: 1; }
+            100% { transform: scale3d(0.94, 0.94, 1) translate3d(0, 20px, 0); opacity: 0; }
+        }
+
+        .mode-transition-active {
+            animation: modeSwitch 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes modeSwitch {
+            0% { opacity: 1; transform: scale3d(1, 1, 1); filter: blur(0px); }
+            50% { opacity: 0.6; transform: scale3d(0.97, 0.97, 1); filter: blur(4px); }
+            100% { opacity: 1; transform: scale3d(1, 1, 1); filter: blur(0px); }
+        }
+
+        .ai-speaking-glow {
+            animation: pulse-avatar 1.5s infinite var(--ios-spring);
+            box-shadow: 0 0 30px var(--theme-glow), inset 0 0 20px var(--theme-glow) !important;
+        }
+        @keyframes pulse-avatar {
+            0%, 100% { transform: scale3d(1, 1, 1); box-shadow: 0 0 15px var(--theme-glow); }
+            50% { transform: scale3d(1.15, 1.15, 1); box-shadow: 0 0 40px var(--theme-glow); }
+        }
+    </style>
+</head>
+<body class="text-gray-200 antialiased selection:bg-purple-500/30 selection:text-white flex h-screen w-screen relative transition-colors duration-[2000ms]">
+
+    <div id="theme-ripple"></div>
+
+    <!-- Background Canvas -->
+    <canvas id="bg-canvas" class="fixed inset-0 w-full h-full z-[-2] pointer-events-none"></canvas>
+    
+    <!-- Ambient Blur Orbs -->
+    <div id="orb-1" class="fixed top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-purple-600/10 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000"></div>
+    <div id="orb-2" class="fixed bottom-[-10%] right-[-5%] w-[30vw] h-[30vw] bg-cyan-600/10 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000" style="animation-delay: -3s;"></div>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="overlay fixed inset-0 z-40"></div>
+
+    <!-- Slide-out Sidebar -->
+    <aside id="sidebar-container" class="fixed top-0 left-0 h-full w-80 z-50 p-4">
+        <div class="glass-panel w-full h-full rounded-3xl flex flex-col border border-white/10 shadow-2xl overflow-hidden relative">
+            
+            <!-- Brand Header -->
+            <div class="p-6 flex items-center justify-between border-b border-white/5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 p-[1px] shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                        <div class="w-full h-full bg-veltrix-900 rounded-xl flex items-center justify-center">
+                            <i class="ph-fill ph-aperture text-2xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-semibold tracking-tight text-white">Advanced <span class="text-purple-400">AI</span></h1>
+                        <p class="text-[10px] text-gray-500 font-medium tracking-widest uppercase">Neural Core v3</p>
+                    </div>
+                </div>
+                <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white transition-colors p-2 bg-white/5 rounded-full hover:bg-white/10">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="p-5">
+                <button onclick="startNewChat()" class="w-full glass-button py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-medium text-white shadow-lg">
+                    <i class="ph ph-plus-circle text-lg"></i>
+                    New Chat
+                </button>
+            </div>
+
+            <!-- Search History -->
+            <div class="px-5 pb-4">
+                <div class="relative group">
+                    <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-purple-400 transition-colors"></i>
+                    <input type="text" id="search-chat" placeholder="Search memories..." class="w-full bg-black/40 border border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-sm text-gray-300 focus:outline-none focus:border-purple-500/50 transition-colors placeholder-gray-600">
+                </div>
+            </div>
+
+            <!-- Chat History List -->
+            <div class="flex-1 overflow-y-auto px-3 pb-4 space-y-1" id="chat-history-list">
+                <div class="text-center text-xs text-gray-600 mt-10">No prior memories found.</div>
+            </div>
+            
+            <div class="p-4 text-center text-xs text-gray-500 border-t border-white/5 bg-black/20">
+                <span id="live-clock" class="font-mono tracking-widest">00:00:00</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Interface -->
+    <main class="flex-1 flex flex-col h-full relative w-full z-10 transition-all duration-500">
+        
+        <!-- Top Header -->
+        <header class="h-16 flex items-center justify-between px-4 lg:px-8 bg-black/20 backdrop-blur-xl border-b border-white/5 z-30 sticky top-0">
+            <div class="flex items-center gap-4 z-10">
+                <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-300 hover:bg-white/10 transition-colors">
+                    <i class="ph ph-list text-xl"></i>
+                </button>
+            </div>
+
+            <div class="absolute left-1/2 -translate-x-1/2 font-semibold text-white tracking-tight flex items-center gap-2 pointer-events-none">
+                Advanced AI
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
+            </div>
+
+            <div class="flex items-center gap-1 z-10">
+                <button onclick="exportChat()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors" title="Export as TXT">
+                    <i class="ph ph-download-simple text-lg"></i>
+                </button>
+                <button onclick="toggleSettings()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors" title="System Settings">
+                    <i class="ph ph-gear text-xl"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Container -->
+        <div id="chat-container" class="flex-1 overflow-y-auto px-4 lg:px-20 pt-8 pb-40 scroll-smooth">
+            
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="max-w-4xl mx-auto h-full flex flex-col justify-center items-center text-center animate-enter">
+                <div class="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-purple-500/20 to-cyan-500/20 p-[1px] mb-6 animate-float">
+                    <div class="w-full h-full bg-veltrix-900/80 backdrop-blur-xl rounded-[2rem] flex items-center justify-center shadow-2xl shadow-purple-500/10">
+                        <i class="ph-fill ph-aperture text-5xl text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-cyan-400" id="welcome-icon"></i>
+                    </div>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">Good <span id="greeting-time">Evening</span>.</h2>
+                <p class="text-lg text-gray-400 mb-8 max-w-xl font-light">I am your Advanced AI assistant. Select a specialized operational mode or begin chatting below.</p>
+                
+                <!-- Quick Mode Selector -->
+                <div class="flex flex-wrap items-center justify-center gap-3 mb-10 bg-black/40 p-2 rounded-full border border-white/5 backdrop-blur-xl">
+                    <button onclick="setMode('general')" id="ws-btn-general" class="px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-2 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                        <i class="ph-fill ph-aperture"></i> General
+                    </button>
+                    <button onclick="setMode('deepLearning')" id="ws-btn-dl" class="px-5 py-2.5 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5 border border-transparent flex items-center gap-2">
+                        <i class="ph-fill ph-brain"></i> Deep Learning
+                    </button>
+                    <button onclick="setMode('coding')" id="ws-btn-code" class="px-5 py-2.5 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5 border border-transparent flex items-center gap-2">
+                        <i class="ph-fill ph-code"></i> Code Generation
+                    </button>
+                    <button onclick="setMode('imageStudio')" id="ws-btn-image" class="px-5 py-2.5 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5 border border-transparent flex items-center gap-2">
+                        <i class="ph-fill ph-image"></i> Image Studio
+                    </button>
+                </div>
+
+                <!-- Feature Suggestions -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full text-left max-w-4xl">
+                    <button class="glass-button p-5 rounded-2xl group text-left relative overflow-hidden w-full transition-transform hover:-translate-y-1" onclick="startSuggestion('general', 'What are the ethical implications of artificial general intelligence? Please provide a detailed overview.', true)">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 to-orange-400 opacity-50"></div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="ph-fill ph-lightbulb text-yellow-400 text-xl group-hover:scale-110 transition-transform duration-500"></i>
+                            <span class="font-medium text-gray-200">Knowledge: Ethics</span>
+                        </div>
+                        <p class="text-sm text-gray-500 line-clamp-2">Enable chain-of-thought and analyze the ethical implications of AGI.</p>
+                    </button>
+                    <button class="glass-button p-5 rounded-2xl group text-left relative overflow-hidden w-full transition-transform hover:-translate-y-1" onclick="startSuggestion('deepLearning', 'Explain the architecture of a transformer neural network, specifically focusing on Multi-Head Attention mechanisms.')">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-500 to-purple-500 opacity-50"></div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="ph-fill ph-brain text-pink-400 text-xl group-hover:scale-110 transition-transform duration-500"></i>
+                            <span class="font-medium text-gray-200">Deep Learning</span>
+                        </div>
+                        <p class="text-sm text-gray-500 line-clamp-2">Explain Transformer Architecture and Multi-Head Attention mechanisms.</p>
+                    </button>
+                    <button class="glass-button p-5 rounded-2xl group text-left relative overflow-hidden w-full transition-transform hover:-translate-y-1" onclick="startSuggestion('coding', 'Write a modern React component for a beautiful glassmorphism login screen using Tailwind CSS.')">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-50"></div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="ph-fill ph-code text-cyan-400 text-xl group-hover:scale-110 transition-transform duration-500"></i>
+                            <span class="font-medium text-gray-200">Build Web Apps</span>
+                        </div>
+                        <p class="text-sm text-gray-500 line-clamp-2">Generate a runnable React component for a glassmorphism login UI.</p>
+                    </button>
+                    <button class="glass-button p-5 rounded-2xl group text-left relative overflow-hidden w-full transition-transform hover:-translate-y-1" onclick="startSuggestion('imageStudio', 'A highly detailed 3D render of a futuristic cyberpunk city with flying cars, neon lights, and rain, unreal engine 5 style.')">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500 opacity-50"></div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <i class="ph-fill ph-image text-amber-400 text-xl group-hover:scale-110 transition-transform duration-500"></i>
+                            <span class="font-medium text-gray-200">Image Studio</span>
+                        </div>
+                        <p class="text-sm text-gray-500 line-clamp-2">Generate a hyper-realistic 3D render of a futuristic cyberpunk city.</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="messages-wrapper" class="max-w-4xl mx-auto space-y-8 hidden w-full pb-10">
+                <!-- Messages injected here -->
+            </div>
+            
+            <!-- AI Thinking Indicator -->
+            <div id="thinking-indicator" class="max-w-4xl mx-auto mt-6 hidden opacity-0 transition-opacity duration-300">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 p-[1px] flex-shrink-0 mt-1 shadow-lg" id="thinking-icon-wrap">
+                        <div class="w-full h-full bg-veltrix-900 rounded-full flex items-center justify-center">
+                            <i class="ph-fill ph-aperture text-sm text-white animate-spin-slow" id="thinking-icon"></i>
+                        </div>
+                    </div>
+                    <div class="msg-ai px-5 py-4 text-sm w-auto max-w-[85%] flex items-center gap-3 border border-white/5 shadow-2xl">
+                        <span id="thinking-text" class="text-purple-300 font-mono text-xs uppercase tracking-wider transition-opacity duration-200">INITIALIZING NEURAL CORE...</span>
+                        <div class="flex space-x-1">
+                            <div class="dot-typing"></div>
+                            <div class="dot-typing"></div>
+                            <div class="dot-typing"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area Container -->
+        <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-black/95 to-transparent pt-12 pb-8 px-4 lg:px-20 z-20 pointer-events-none">
+            <div class="max-w-4xl mx-auto relative pointer-events-auto">
+                
+                <div class="absolute -top-14 left-1/2 -translate-x-1/2 flex items-center justify-center">
+                    <button id="scroll-bottom-btn" class="hidden glass-button w-10 h-10 rounded-full flex items-center justify-center text-white/70 shadow-lg">
+                        <i class="ph ph-arrow-down"></i>
+                    </button>
+                </div>
+
+                <!-- Main Input Box -->
+                <div class="glass-panel p-2 rounded-[2rem] flex flex-col shadow-2xl relative border border-white/10 transition-all duration-300 bg-black/60 backdrop-blur-2xl" id="input-wrapper">
+                    
+                    <!-- Attachment Preview Bar -->
+                    <div id="attachment-bar" class="hidden w-full px-4 pt-2 pb-1 flex gap-2 overflow-x-auto">
+                        <!-- Chips injected here -->
+                    </div>
+
+                    <div class="flex items-end gap-2 w-full">
+                        <!-- Left Actions -->
+                        <div class="flex items-center gap-1 pl-1 pb-1 flex-shrink-0">
+                            <button onclick="toggleModes()" class="p-3 text-purple-400 hover:text-purple-300 transition-colors rounded-full hover:bg-white/10 relative" title="Tools & Preferences">
+                                <i class="ph-fill ph-sliders text-xl"></i>
+                            </button>
+                            <input type="file" id="file-upload" class="hidden" accept=".txt,.md,.json,.csv,.js,.html,.css,.py,.cpp,.java,.png,.jpg,.jpeg,.webp">
+                            <button onclick="document.getElementById('file-upload').click()" class="p-3 text-gray-400 hover:text-white transition-colors rounded-full hover:bg-white/10" title="Attach Document Context or Image Photo">
+                                <i class="ph ph-paperclip text-xl"></i>
+                            </button>
+                        </div>
+
+                        <!-- Textarea -->
+                        <textarea 
+                            id="chat-input" 
+                            rows="1" 
+                            placeholder="Message Advanced AI..." 
+                            class="w-full bg-transparent text-white placeholder-gray-500 py-3 px-2 focus:outline-none text-base resize-none leading-relaxed"
+                            style="max-height: 200px;"
+                        ></textarea>
+
+                        <!-- Right Actions -->
+                        <div class="flex items-center gap-1 pr-1 pb-1 flex-shrink-0 relative">
+                            <button id="voice-btn" onclick="toggleVoiceRecognition()" class="p-3 text-gray-400 hover:text-red-400 transition-colors rounded-full hover:bg-white/10 relative z-10 w-11 h-11 flex items-center justify-center overflow-hidden" title="Voice Input">
+                                <i class="ph-fill ph-microphone text-xl relative z-10 transition-opacity duration-300" id="voice-icon"></i>
+                                <div id="voice-wave" class="absolute inset-0 bg-red-500/10 hidden items-center justify-center gap-[3px] z-0">
+                                    <div class="soundwave-bar" style="animation-delay: 0.0s"></div>
+                                    <div class="soundwave-bar" style="animation-delay: 0.15s"></div>
+                                    <div class="soundwave-bar" style="animation-delay: 0.3s"></div>
+                                    <div class="soundwave-bar" style="animation-delay: 0.45s"></div>
+                                </div>
+                            </button>
+                            
+                            <button id="send-btn" onclick="handleSend()" class="w-10 h-10 rounded-full btn-primary flex items-center justify-center text-white transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed z-10">
+                                <i class="ph-fill ph-arrow-up text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3 text-[11px] text-gray-500 font-medium">
+                    Advanced AI knowledge engine. Please verify generated code and strategic facts.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- General Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md" onclick="toggleSettings()"></div>
+        <div class="glass-panel w-full max-w-md p-6 rounded-3xl relative z-10 border border-white/10 shadow-2xl animate-enter">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="ph-fill ph-gear"></i> System Settings
+                </h3>
+                <button onclick="toggleSettings()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- API Key Config -->
+                <div class="mb-6 pb-6 border-b border-white/5">
+                    <label class="block text-sm font-medium text-gray-300 mb-3">Google Gemini API Key</label>
+                    <input type="password" id="api-key-input" placeholder="Enter your AI Studio key..." class="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-sm text-gray-200 focus:outline-none focus:border-purple-500 mb-3 transition-colors" oninput="saveApiKey(this.value)">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex gap-2">
+                            <button onclick="useSuggestedKey()" class="flex-1 py-2 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-xs font-medium text-purple-300 transition-colors flex items-center justify-center gap-1.5" title="Auto-Configure Default Premium API Key">
+                                <i class="ph ph-magic-wand"></i> Auto-Configure
+                            </button>
+                            <button onclick="clearApiKey()" class="flex-1 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-gray-400 transition-colors flex items-center justify-center gap-1.5">
+                                <i class="ph ph-trash"></i> Clear Key
+                            </button>
+                        </div>
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="w-full py-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 text-xs font-medium transition-colors flex items-center justify-center gap-1.5">
+                            <i class="ph ph-key"></i> Get Personal API Key
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-3">Interface Text Size</label>
+                    <input type="range" id="font-slider" min="0.8" max="1.2" step="0.1" value="1.0" class="w-full accent-purple-500" onchange="updateFontSize(this.value)">
+                </div>
+
+                <!-- Theme Color Picker -->
+                <div class="pt-2 border-t border-white/5">
+                    <label class="block text-sm font-medium text-gray-300 mb-3">System Accent Color</label>
+                    <div class="flex gap-4">
+                        <button onclick="setTheme('purple')" class="w-8 h-8 rounded-full bg-[#8b5cf6] border-2 border-transparent focus:border-white transition-all hover:scale-110"></button>
+                        <button onclick="setTheme('emerald')" class="w-8 h-8 rounded-full bg-[#10b981] border-2 border-transparent focus:border-white transition-all hover:scale-110"></button>
+                        <button onclick="setTheme('rose')" class="w-8 h-8 rounded-full bg-[#f43f5e] border-2 border-transparent focus:border-white transition-all hover:scale-110"></button>
+                        <button onclick="setTheme('blue')" class="w-8 h-8 rounded-full bg-[#3b82f6] border-2 border-transparent focus:border-white transition-all hover:scale-110"></button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between py-2 border-t border-white/5">
+                    <div>
+                        <div class="text-sm font-medium text-gray-200">Voice Synthesis Output</div>
+                        <div class="text-xs text-gray-500">AI reads a brief summary aloud</div>
+                    </div>
+                    <button id="pref-sound-toggle" onclick="toggleSound()" class="w-12 h-6 rounded-full bg-gray-600 relative transition-colors shadow-inner">
+                        <div id="pref-sound-knob" class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-all shadow-md"></div>
+                    </button>
+                </div>
+
+                <div class="pt-4 border-t border-white/5">
+                    <button onclick="clearAllChats(); toggleSettings();" class="w-full py-3 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors text-sm font-medium flex items-center justify-center gap-2">
+                        <i class="ph ph-trash"></i> Wipe Context Memory
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Personas Modal -->
+    <div id="modes-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md" onclick="toggleModes()"></div>
+        <div class="glass-panel w-full max-w-md p-6 rounded-3xl relative z-10 border border-purple-500/20 shadow-2xl shadow-purple-500/10 animate-enter">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="ph-fill ph-sliders text-purple-400"></i> Specialized AI Modes
+                </h3>
+                <button onclick="toggleModes()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors"><i class="ph ph-x text-lg"></i></button>
+            </div>
+            
+            <div class="space-y-3">
+                <button onclick="setMode('general')" id="mode-btn-general" class="w-full text-left p-4 rounded-xl border border-purple-500/50 bg-purple-500/10 flex items-center justify-between transition-all group">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ph-aperture text-2xl text-purple-400 group-hover:scale-110 transition-transform"></i>
+                        <div>
+                            <div class="font-medium text-white">General Assistant</div>
+                            <div class="text-xs text-gray-400">Standard AI capabilities</div>
+                        </div>
+                    </div>
+                    <i id="mode-check-general" class="ph-fill ph-check-circle text-purple-400 text-xl transition-colors"></i>
+                </button>
+
+                <button onclick="setMode('deepLearning')" id="mode-btn-deepLearning" class="w-full text-left p-4 rounded-xl border border-white/5 hover:bg-white/5 flex items-center justify-between transition-all group">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ph-brain text-2xl text-pink-400 group-hover:scale-110 transition-transform"></i>
+                        <div>
+                            <div class="font-medium text-white">Deep Learning Chat</div>
+                            <div class="text-xs text-gray-400">Advanced Neural Net Focus</div>
+                        </div>
+                    </div>
+                    <i id="mode-check-deepLearning" class="ph-fill ph-check-circle text-transparent text-xl transition-colors"></i>
+                </button>
+
+                <button onclick="setMode('coding')" id="mode-btn-coding" class="w-full text-left p-4 rounded-xl border border-white/5 hover:bg-white/5 flex items-center justify-between transition-all group">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ph-code text-2xl text-cyan-400 group-hover:scale-110 transition-transform"></i>
+                        <div>
+                            <div class="font-medium text-white">Code Generation</div>
+                            <div class="text-xs text-gray-400">Expert Programmer Sandbox</div>
+                        </div>
+                    </div>
+                    <i id="mode-check-coding" class="ph-fill ph-check-circle text-transparent text-xl transition-colors"></i>
+                </button>
+
+                <button onclick="setMode('imageStudio')" id="mode-btn-imageStudio" class="w-full text-left p-4 rounded-xl border border-white/5 hover:bg-white/5 flex items-center justify-between transition-all group">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ph-image text-2xl text-amber-400 group-hover:scale-110 transition-transform"></i>
+                        <div>
+                            <div class="font-medium text-white">Image Studio</div>
+                            <div class="text-xs text-gray-400">AI Image Generation & Editing</div>
+                        </div>
+                    </div>
+                    <i id="mode-check-imageStudio" class="ph-fill ph-check-circle text-transparent text-xl transition-colors"></i>
+                </button>
+
+                <!-- Advanced Reasoning Toggle -->
+                <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between p-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                            <i class="ph-fill ph-lightbulb text-xl text-yellow-400"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium text-white text-sm">Reasoning Engine</div>
+                            <div class="text-[11px] text-gray-400">Enable chain-of-thought visibility</div>
+                        </div>
+                    </div>
+                    <button id="pref-reasoning-toggle" onclick="toggleReasoning()" class="w-12 h-6 rounded-full bg-gray-600 relative transition-colors shadow-inner shrink-0">
+                        <div id="pref-reasoning-knob" class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-all shadow-md"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Code Preview Modal -->
+    <div id="preview-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 md:p-8 perspective-1000">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-xl transition-opacity" onclick="closePreview()"></div>
+        
+        <div id="preview-modal-content" class="w-[95vw] h-[90vh] bg-black/60 backdrop-blur-3xl rounded-[2rem] relative z-10 border border-white/10 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.8),0_0_40px_rgba(6,182,212,0.15)] flex flex-col overflow-hidden preview-enter animate-float-window">
+            
+            <div id="preview-header" class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-gradient-to-r from-white/5 to-transparent select-none">
+                <div class="flex items-center gap-4">
+                    <div class="flex gap-2">
+                        <button onclick="closePreview()" class="w-3.5 h-3.5 rounded-full bg-red-500 hover:bg-red-400 shadow-[0_0_8px_rgba(239,68,68,0.6)] transition-colors flex items-center justify-center group/btn"><i class="ph ph-x text-[8px] text-black opacity-0 group-hover/btn:opacity-100 transition-opacity"></i></button>
+                        <button class="w-3.5 h-3.5 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.6)] cursor-default"></button>
+                        <button onclick="togglePreviewFullscreen()" class="w-3.5 h-3.5 rounded-full bg-green-500 hover:bg-green-400 shadow-[0_0_8px_rgba(34,197,94,0.6)] transition-colors flex items-center justify-center group/btn"><i class="ph ph-arrows-out-simple text-[8px] text-black opacity-0 group-hover/btn:opacity-100 transition-opacity"></i></button>
+                    </div>
+                    <div class="w-px h-5 bg-white/10 mx-2"></div>
+                    <h3 class="text-gray-200 font-semibold text-sm flex items-center gap-2 tracking-wide font-mono">
+                        <i class="ph-fill ph-code text-cyan-400 text-lg"></i> 
+                        Live Execution Sandbox
+                    </h3>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400 font-mono hidden sm:inline-block px-3 py-1 bg-white/5 rounded-full border border-white/5" id="preview-lang-badge">HTML/JS</span>
+                    
+                    <!-- Edit Sandbox Mode Toggle -->
+                    <button id="preview-edit-btn" onclick="togglePreviewEditMode()" class="text-purple-400 hover:text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 px-3 py-1.5 rounded-xl border border-purple-500/20 transition-all flex items-center justify-center gap-1.5 shadow-inner" title="Edit Code">
+                        <i class="ph ph-pencil-simple text-base" id="preview-edit-icon"></i>
+                        <span class="text-xs font-semibold hidden md:inline" id="preview-edit-text">Edit</span>
+                    </button>
+
+                    <!-- Premium Rerun Controls -->
+                    <button onclick="rerunSandbox()" class="text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 px-3 py-1.5 rounded-xl border border-cyan-500/20 transition-all flex items-center justify-center gap-1.5 shadow-inner" title="Rerun Sandbox">
+                        <i class="ph ph-arrows-counter-clockwise text-base"></i>
+                        <span class="text-xs font-semibold hidden md:inline">Rerun</span>
+                    </button>
+
+                    <!-- Fullscreen Toggle -->
+                    <button onclick="togglePreviewFullscreen()" class="text-gray-400 hover:text-white bg-white/5 p-1.5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors shadow-inner">
+                        <i id="fullscreen-icon" class="ph ph-corners-out text-lg"></i>
+                    </button>
+
+                    <!-- Close Button -->
+                    <button onclick="closePreview()" class="text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-xl border border-red-500/20 transition-all flex items-center justify-center gap-1.5 shadow-inner ml-2" title="Close Sandbox">
+                        <i class="ph ph-x text-base font-bold"></i>
+                        <span class="text-xs font-bold">Close</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Execution Environment -->
+            <div class="flex-1 relative bg-[#0a0a0f] overflow-hidden flex flex-col">
+                <textarea id="preview-editor" spellcheck="false" class="hidden z-[5] w-full h-full bg-[#0d0d12] text-purple-300 font-mono text-sm p-5 border-none outline-none resize-none leading-relaxed transition-opacity absolute inset-0"></textarea>
+                
+                <!-- NOTE: Iframe background handled dynamically in JS based on Web/Terminal mode -->
+                <iframe id="preview-iframe" class="w-full h-full border-none opacity-0 transition-opacity duration-300 absolute inset-0 z-[1]" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms"></iframe>
+                
+                <!-- Beautiful Glass Loader -->
+                <div id="preview-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0a0f]/80 backdrop-blur-md gap-4 z-[10]">
+                    <div class="relative w-16 h-16">
+                        <div class="absolute inset-0 border-4 border-cyan-500/20 rounded-full"></div>
+                        <div class="absolute inset-0 border-4 border-t-cyan-400 rounded-full animate-spin"></div>
+                    </div>
+                    <p class="text-cyan-300 text-sm font-medium tracking-widest font-mono animate-pulse">BOOTING NEURAL SANDBOX...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast UI Notifications -->
+    <div id="toast" class="fixed top-6 right-6 z-[100] glass-panel px-5 py-3.5 rounded-2xl flex items-center gap-3 border border-white/10 shadow-2xl transform translate-y-[-100px] opacity-0 transition-all duration-400" style="transition-timing-function: var(--ios-spring);">
+        <i class="ph-fill ph-check-circle text-purple-400 text-xl" id="toast-icon"></i>
+        <span class="text-sm font-medium text-white shadow-sm" id="toast-msg">Notification</span>
+    </div>
+
+    <script>
+        const safeStorage = {
+            getItem(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    console.warn('Storage access failed:', e);
+                    return null;
+                }
+            },
+            setItem(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                } catch (e) {
+                    console.warn('Storage access failed:', e);
+                }
+            },
+            removeItem(key) {
+                try {
+                    localStorage.removeItem(key);
+                } catch (e) {
+                    console.warn('Storage access failed:', e);
+                }
+            }
+        };
+
+        const CONFIG = {
+            botName: "Advanced AI",
+            thinkDelay: 10 
+        };
+
+        // GLOBAL MEMORY CACHE for robust large-code handling
+        window.codeBlockCache = {};
+
+        let state = {
+            isGenerating: false,
+            voiceMode: false,
+            soundEnabled: false,
+            neuralBgEnabled: true,
+            activeMode: 'general',
+            reasoningMode: false,
+            sessions: [], 
+            currentSessionId: null,
+            lastPreviewCodeId: null, // Tracks reference ID instead of base64 to prevent crashing
+            lastPreviewLang: '',
+            attachedFile: null 
+        };
+
+        let isPreviewFullscreen = false;
+        let isPreviewEditing = false;
+
+        const els = {
+            input: document.getElementById('chat-input'),
+            sendBtn: document.getElementById('send-btn'),
+            messagesWrapper: document.getElementById('messages-wrapper'),
+            welcomeScreen: document.getElementById('welcome-screen'),
+            chatContainer: document.getElementById('chat-container'),
+            thinkingInd: document.getElementById('thinking-indicator'),
+            toast: document.getElementById('toast'),
+            toastMsg: document.getElementById('toast-msg'),
+            toastIcon: document.getElementById('toast-icon'),
+            voiceBtn: document.getElementById('voice-btn'),
+            voiceIcon: document.getElementById('voice-icon'),
+            voiceWave: document.getElementById('voice-wave'),
+            inputWrapper: document.getElementById('input-wrapper'),
+            scrollBtn: document.getElementById('scroll-bottom-btn'),
+            sidebar: document.getElementById('sidebar-container'),
+            sidebarOverlay: document.getElementById('sidebar-overlay'),
+            chatHistoryList: document.getElementById('chat-history-list')
+        };
+
+        window.onload = () => {
+            initTime();
+            initCanvasBg();
+            setupEventListeners();
+            initSpatialParallax();
+            
+            const savedTheme = safeStorage.getItem('veltrix_theme');
+            if(savedTheme) setTheme(savedTheme, true);
+
+            let savedKey = safeStorage.getItem('veltrix_api_key');
+            if (!savedKey) {
+                // Auto-configure default premium API key on first load
+                savedKey = 'AIzaSyA-zacIlt6qZvSvjprwCG31Qb3bNUHoFgc';
+                saveApiKey(savedKey);
+            }
+            document.getElementById('api-key-input').value = savedKey;
+
+            loadSessions();
+            setMode('general', true);
+        };
+
+        function saveApiKey(val) {
+            safeStorage.setItem('veltrix_api_key', val.trim());
+        }
+
+        function useSuggestedKey() {
+            const key = 'AIzaSyA-zacIlt6qZvSvjprwCG31Qb3bNUHoFgc';
+            document.getElementById('api-key-input').value = key;
+            saveApiKey(key);
+            showToast("Auto-Configured Premium Key.", "info");
+        }
+
+        function clearApiKey() {
+            document.getElementById('api-key-input').value = '';
+            saveApiKey('');
+            showToast("Cleared API Key.", "info");
+        }
+
+        function initTime() {
+            const clockEl = document.getElementById('live-clock');
+            const greetingEl = document.getElementById('greeting-time');
+            setInterval(() => {
+                const now = new Date();
+                clockEl.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+                const hour = now.getHours();
+                if(hour < 12) greetingEl.textContent = "Morning";
+                else if(hour < 18) greetingEl.textContent = "Afternoon";
+                else greetingEl.textContent = "Evening";
+            }, 1000);
+        }
+
+        function toggleSidebar() {
+            els.sidebar.classList.toggle('open');
+            els.sidebarOverlay.classList.toggle('open');
+        }
+
+        function toggleSettings() {
+            document.getElementById('settings-modal').classList.toggle('hidden');
+        }
+
+        function toggleModes() {
+            document.getElementById('modes-modal').classList.toggle('hidden');
+        }
+
+        function toggleReasoning() {
+            state.reasoningMode = !state.reasoningMode;
+            const prefKnob = document.getElementById('pref-reasoning-knob');
+            const prefBg = document.getElementById('pref-reasoning-toggle');
+            
+            if(state.reasoningMode) {
+                prefBg.classList.replace('bg-gray-600', 'bg-yellow-500');
+                prefKnob.classList.replace('left-0.5', 'right-0.5');
+                showToast("Chain-of-Thought Reasoning Enabled.");
+            } else {
+                prefBg.classList.replace('bg-yellow-500', 'bg-gray-600');
+                prefKnob.classList.replace('right-0.5', 'left-0.5');
+                showToast("Reasoning Mode Disabled.");
+            }
+        }
+
+        function setMode(modeName, quiet = false) {
+            state.activeMode = modeName;
+            
+            const wsContainer = document.getElementById('welcome-screen');
+            if (wsContainer && !wsContainer.classList.contains('hidden')) {
+                wsContainer.classList.remove('mode-transition-active');
+                void wsContainer.offsetWidth;
+                wsContainer.classList.add('mode-transition-active');
+            }
+
+            ['general', 'deepLearning', 'coding', 'imageStudio'].forEach(m => {
+                const btn = document.getElementById(`mode-btn-${m}`);
+                const check = document.getElementById(`mode-check-${m}`);
+                if(btn) {
+                    btn.classList.remove('border-purple-500/50', 'bg-purple-500/10', 'border-pink-500/50', 'bg-pink-500/10', 'border-cyan-500/50', 'bg-cyan-500/10', 'border-amber-500/50', 'bg-amber-500/10');
+                    btn.classList.add('border-white/5', 'hover:bg-white/5');
+                }
+                if(check) {
+                    check.classList.remove('text-purple-400', 'text-pink-400', 'text-cyan-400', 'text-amber-400');
+                    check.classList.add('text-transparent');
+                }
+            });
+
+            ['general', 'dl', 'code', 'image'].forEach(m => {
+                const wsBtn = document.getElementById(`ws-btn-${m}`);
+                if (wsBtn) wsBtn.className = "px-5 py-2.5 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5 border border-transparent flex items-center gap-2";
+            });
+
+            const activeModalBtn = document.getElementById(`mode-btn-${modeName}`);
+            const activeModalCheck = document.getElementById(`mode-check-${modeName}`);
+            if (activeModalBtn) activeModalBtn.classList.remove('border-white/5', 'hover:bg-white/5');
+
+            const orb1 = document.getElementById('orb-1');
+            const orb2 = document.getElementById('orb-2');
+            const wIcon = document.getElementById('welcome-icon');
+            const tWrap = document.getElementById('thinking-icon-wrap');
+            const tIcon = document.getElementById('thinking-icon');
+
+            let toastMsg = "";
+
+            if (modeName === 'general') {
+                document.documentElement.style.setProperty('--app-bg', '#000000');
+                if (activeModalBtn) activeModalBtn.classList.add('border-purple-500/50', 'bg-purple-500/10');
+                if (activeModalCheck) activeModalCheck.classList.replace('text-transparent', 'text-purple-400');
+                
+                const wsBtn = document.getElementById('ws-btn-general');
+                if (wsBtn) wsBtn.className = "px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-2 shadow-[0_0_15px_rgba(168,85,247,0.2)]";
+                
+                if (orb1) orb1.className = "fixed top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-purple-600/10 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000";
+                if (orb2) orb2.className = "fixed bottom-[-10%] right-[-5%] w-[30vw] h-[30vw] bg-cyan-600/10 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000";
+                
+                if (wIcon) wIcon.className = "ph-fill ph-aperture text-5xl text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-cyan-400 transition-all";
+                if (tWrap) tWrap.className = "w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 p-[1px] flex-shrink-0 mt-1 shadow-lg transition-all";
+                if (tIcon) tIcon.className = "ph-fill ph-aperture text-sm text-white";
+                
+                toastMsg = "General Persona Active.";
+            } else if (modeName === 'deepLearning') {
+                document.documentElement.style.setProperty('--app-bg', '#05000a');
+                if (activeModalBtn) activeModalBtn.classList.add('border-pink-500/50', 'bg-pink-500/10');
+                if (activeModalCheck) activeModalCheck.classList.replace('text-transparent', 'text-pink-400');
+                
+                const wsBtn = document.getElementById('ws-btn-dl');
+                if (wsBtn) wsBtn.className = "px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-pink-500/20 text-pink-300 border border-pink-500/30 flex items-center gap-2 shadow-[0_0_15px_rgba(236,72,153,0.2)]";
+
+                if (orb1) orb1.className = "fixed top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-pink-600/20 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000";
+                if (orb2) orb2.className = "fixed bottom-[-10%] right-[-5%] w-[30vw] h-[30vw] bg-purple-600/20 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000";
+                
+                if (wIcon) wIcon.className = "ph-fill ph-brain text-5xl text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-purple-400 transition-all";
+                if (tWrap) tWrap.className = "w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 p-[1px] flex-shrink-0 mt-1 shadow-lg transition-all";
+                if (tIcon) tIcon.className = "ph-fill ph-brain text-sm text-white";
+
+                toastMsg = "Deep Learning Chat Active.";
+            } else if (modeName === 'coding') {
+                document.documentElement.style.setProperty('--app-bg', '#000810');
+                if (activeModalBtn) activeModalBtn.classList.add('border-cyan-500/50', 'bg-cyan-500/10');
+                if (activeModalCheck) activeModalCheck.classList.replace('text-transparent', 'text-cyan-400');
+                
+                const wsBtn = document.getElementById('ws-btn-code');
+                if (wsBtn) wsBtn.className = "px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-2 shadow-[0_0_15px_rgba(6,182,212,0.2)]";
+
+                if (orb1) orb1.className = "fixed top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-cyan-600/20 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000";
+                if (orb2) orb2.className = "fixed bottom-[-10%] right-[-5%] w-[30vw] h-[30vw] bg-blue-600/20 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000";
+                
+                if (wIcon) wIcon.className = "ph-fill ph-code text-5xl text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-blue-400 transition-all";
+                if (tWrap) tWrap.className = "w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 p-[1px] flex-shrink-0 mt-1 shadow-lg transition-all";
+                if (tIcon) tIcon.className = "ph-fill ph-code text-sm text-white";
+
+                toastMsg = "Code Generation Active.";
+            } else if (modeName === 'imageStudio') {
+                document.documentElement.style.setProperty('--app-bg', '#0a0500');
+                if (activeModalBtn) activeModalBtn.classList.add('border-amber-500/50', 'bg-amber-500/10');
+                if (activeModalCheck) activeModalCheck.classList.replace('text-transparent', 'text-amber-400');
+                
+                const wsBtn = document.getElementById('ws-btn-image');
+                if (wsBtn) wsBtn.className = "px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-2 shadow-[0_0_15px_rgba(251,191,36,0.2)]";
+
+                if (orb1) orb1.className = "fixed top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-amber-600/20 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000";
+                if (orb2) orb2.className = "fixed bottom-[-10%] right-[-5%] w-[30vw] h-[30vw] bg-orange-600/20 rounded-full blur-[100px] z-[-1] animate-float pointer-events-none transition-colors duration-1000";
+                
+                if (wIcon) wIcon.className = "ph-fill ph-image text-5xl text-transparent bg-clip-text bg-gradient-to-br from-amber-400 to-orange-400 transition-all";
+                if (tWrap) tWrap.className = "w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 p-[1px] flex-shrink-0 mt-1 shadow-lg transition-all";
+                if (tIcon) tIcon.className = "ph-fill ph-image text-sm text-white";
+
+                toastMsg = "Image Studio Active.";
+            }
+
+            if(!quiet) {
+                showToast(toastMsg);
+                document.getElementById('modes-modal').classList.add('hidden');
+            }
+        }
+
+        function setTheme(theme, quiet = false) {
+            const root = document.documentElement;
+            if(theme === 'purple') {
+                root.style.setProperty('--theme-from', '#7c3aed');
+                root.style.setProperty('--theme-to', '#8b5cf6');
+                root.style.setProperty('--theme-glow', 'rgba(139, 92, 246, 0.3)');
+            } else if (theme === 'emerald') {
+                root.style.setProperty('--theme-from', '#059669');
+                root.style.setProperty('--theme-to', '#10b981');
+                root.style.setProperty('--theme-glow', 'rgba(16, 185, 129, 0.3)');
+            } else if (theme === 'rose') {
+                root.style.setProperty('--theme-from', '#e11d48');
+                root.style.setProperty('--theme-to', '#f43f5e');
+                root.style.setProperty('--theme-glow', 'rgba(244, 63, 94, 0.3)');
+            } else if (theme === 'blue') {
+                root.style.setProperty('--theme-from', '#2563eb');
+                root.style.setProperty('--theme-to', '#3b82f6');
+                root.style.setProperty('--theme-glow', 'rgba(59, 130, 246, 0.3)');
+            }
+            safeStorage.setItem('veltrix_theme', theme);
+            if(!quiet) showToast("System theme applied.");
+        }
+
+        function updateFontSize(val) { document.documentElement.style.setProperty('--font-scale', `${val}rem`); }
+
+        function toggleSound() {
+            state.soundEnabled = !state.soundEnabled;
+            const prefKnob = document.getElementById('pref-sound-knob');
+            const prefBg = document.getElementById('pref-sound-toggle');
+            
+            if(state.soundEnabled) {
+                prefBg.classList.replace('bg-gray-600', 'bg-purple-600');
+                prefKnob.classList.replace('left-0.5', 'right-0.5');
+                showToast("Voice synthesis enabled (Summary Mode).");
+            } else {
+                prefBg.classList.replace('bg-purple-600', 'bg-gray-600');
+                prefKnob.classList.replace('right-0.5', 'left-0.5');
+                window.speechSynthesis.cancel();
+                showToast("Voice synthesis disabled.");
+            }
+        }
+
+        function setupEventListeners() {
+            let layoutTimer;
+            els.input.addEventListener('input', function() {
+                if(layoutTimer) cancelAnimationFrame(layoutTimer);
+                layoutTimer = requestAnimationFrame(() => {
+                    this.style.height = 'auto';
+                    this.style.height = (this.scrollHeight) + 'px';
+                    if(this.value.trim() !== '' || state.attachedFile) els.sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    else els.sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                });
+            });
+
+            els.input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if(!state.isGenerating) handleSend();
+                }
+            });
+
+            els.sidebarOverlay.addEventListener('click', toggleSidebar);
+            document.getElementById('file-upload').addEventListener('change', handleFileUpload);
+            
+            let scrollTimer;
+            els.chatContainer.addEventListener('scroll', () => {
+                if(scrollTimer) cancelAnimationFrame(scrollTimer);
+                scrollTimer = requestAnimationFrame(() => {
+                    const isAtBottom = els.chatContainer.scrollHeight - els.chatContainer.scrollTop <= els.chatContainer.clientHeight + 100;
+                    if(isAtBottom) els.scrollBtn.classList.add('hidden');
+                    else els.scrollBtn.classList.remove('hidden');
+                });
+            });
+            els.scrollBtn.addEventListener('click', scrollToBottom);
+        }
+
+        function startSuggestion(mode, text, useReasoning = false) {
+            setMode(mode, true);
+            if(useReasoning && !state.reasoningMode) toggleReasoning();
+            else if (!useReasoning && state.reasoningMode) toggleReasoning();
+            
+            els.input.value = text;
+            els.input.style.height = 'auto';
+            els.input.style.height = (els.input.scrollHeight) + 'px';
+            els.input.focus();
+            els.sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function removeAttachment() {
+            state.attachedFile = null;
+            document.getElementById('attachment-bar').innerHTML = '';
+            document.getElementById('attachment-bar').classList.add('hidden');
+            document.getElementById('file-upload').value = '';
+            showToast("Attachment removed.");
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const MAX_SIZE = 5 * 1024 * 1024;
+            if (file.size > MAX_SIZE) {
+                showToast(`File exceeds 5MB limit (${formatBytes(file.size)}).`, "error");
+                event.target.value = '';
+                return;
+            }
+
+            simulateUpload(file, (dataUrl) => {
+                state.attachedFile = {
+                    type: file.type.startsWith('image/') ? 'image' : 'text',
+                    name: file.name,
+                    size: formatBytes(file.size),
+                    mimeType: file.type,
+                    data: dataUrl
+                };
+                renderAttachmentPreview();
+            });
+            event.target.value = '';
+        }
+
+        function simulateUpload(file, callback) {
+            const bar = document.getElementById('attachment-bar');
+            bar.classList.remove('hidden');
+            
+            bar.innerHTML = `
+                <div class="attachment-chip shadow-md border-purple-500/50 bg-purple-500/10 animate-enter relative overflow-hidden flex-1 max-w-[300px]">
+                    <div id="upload-progress-fill" class="absolute left-0 top-0 bottom-0 bg-purple-500/20 transition-all duration-300 w-0 z-0"></div>
+                    <i class="ph-fill ph-spinner animate-spin text-purple-400 text-lg relative z-10 mx-2"></i>
+                    <div class="flex flex-col relative z-10 overflow-hidden w-full">
+                        <span class="truncate font-semibold text-gray-200 text-xs w-full">Processing ${file.name}...</span>
+                        <div class="flex items-center mt-0.5 justify-between">
+                            <span class="text-[9px] text-purple-300 font-mono tracking-wider" id="upload-progress-text">0% • CHUNKING</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            let progress = 0;
+            const progressFill = document.getElementById('upload-progress-fill');
+            const progressText = document.getElementById('upload-progress-text');
+            
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 25) + 10;
+                if (progress > 100) progress = 100;
+                
+                if (progressFill) progressFill.style.width = `${progress}%`;
+                if (progressText) progressText.innerText = `${progress}% • UPLOADING`;
+                
+                if (progress === 100) {
+                    if (progressText) progressText.innerText = `100% • SECURED`;
+                    clearInterval(interval);
+                    
+                    setTimeout(() => {
+                        const reader = new FileReader();
+                        if (file.type.startsWith('image/')) {
+                            reader.onload = e => callback(e.target.result);
+                            reader.readAsDataURL(file);
+                        } else {
+                            reader.onload = e => callback(e.target.result);
+                            reader.readAsText(file);
+                        }
+                    }, 400);
+                }
+            }, 300);
+        }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
+
+        function renderAttachmentPreview() {
+            const bar = document.getElementById('attachment-bar');
+            if (!state.attachedFile) {
+                bar.classList.add('hidden');
+                bar.innerHTML = '';
+                return;
+            }
+            
+            bar.classList.remove('hidden');
+            let content = '';
+            const sizeLabel = `<span class="text-[9px] text-gray-400 font-mono tracking-wider ml-auto bg-black/40 px-1.5 py-0.5 rounded shadow-inner">${state.attachedFile.size}</span>`;
+            
+            if (state.attachedFile.type === 'image') {
+                content = `
+                    <div class="attachment-chip shadow-[0_4px_15px_rgba(0,0,0,0.3)] animate-enter border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-transparent flex-1 max-w-[300px]">
+                        <img src="${state.attachedFile.data}" alt="attachment thumbnail" class="border border-white/10 shadow-sm ml-1">
+                        <div class="flex flex-col overflow-hidden w-full">
+                            <span class="truncate font-semibold text-gray-200 text-xs w-full">${state.attachedFile.name}</span>
+                            <div class="flex items-center mt-0.5">
+                                <span class="text-[9px] text-purple-400 uppercase tracking-wider font-semibold">Image Asset</span>
+                                ${sizeLabel}
+                            </div>
+                        </div>
+                        <button onclick="removeAttachment()" class="ml-2 mr-1 text-gray-400 hover:text-red-400 p-1.5 rounded-full hover:bg-red-500/20 hover:shadow-inner transition-colors flex-shrink-0"><i class="ph ph-x"></i></button>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="attachment-chip shadow-[0_4px_15px_rgba(0,0,0,0.3)] animate-enter border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-transparent flex-1 max-w-[300px]">
+                        <div class="w-[32px] h-[32px] ml-1 rounded-lg bg-blue-500/20 flex items-center justify-center border border-blue-500/30 flex-shrink-0">
+                            <i class="ph-fill ph-file-text text-blue-400 text-lg"></i>
+                        </div>
+                        <div class="flex flex-col overflow-hidden w-full">
+                            <span class="truncate font-semibold text-gray-200 text-xs w-full">${state.attachedFile.name}</span>
+                            <div class="flex items-center mt-0.5">
+                                <span class="text-[9px] text-blue-400 uppercase tracking-wider font-semibold">Text Document</span>
+                                ${sizeLabel}
+                            </div>
+                        </div>
+                        <button onclick="removeAttachment()" class="ml-2 mr-1 text-gray-400 hover:text-red-400 p-1.5 rounded-full hover:bg-red-500/20 hover:shadow-inner transition-colors flex-shrink-0"><i class="ph ph-x"></i></button>
+                    </div>
+                `;
+            }
+            
+            bar.innerHTML = content;
+            showToast(`Secured ${state.attachedFile.name}`);
+        }
+
+        function handleSend() {
+            const text = els.input.value.trim();
+            if (!text && !state.attachedFile) return;
+            if (state.isGenerating) return;
+
+            document.querySelectorAll('.error-block').forEach(el => el.remove());
+
+            els.input.value = '';
+            els.input.style.height = 'auto';
+            els.sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            const attachmentToSend = state.attachedFile;
+            
+            state.attachedFile = null;
+            document.getElementById('attachment-bar').innerHTML = '';
+            document.getElementById('attachment-bar').classList.add('hidden');
+            
+            appendMessage('user', text, false, attachmentToSend);
+            
+            if (!state.currentSessionId) {
+                state.currentSessionId = Date.now().toString();
+                state.sessions.push({
+                    id: state.currentSessionId,
+                    title: (text ? text.substring(0, 30) : 'Visual Content Upload') + (text.length > 30 ? '...' : ''),
+                    messages: [],
+                    date: Date.now(),
+                    pinned: false
+                });
+            }
+
+            const session = state.sessions.find(s => s.id === state.currentSessionId);
+            session.messages.push({ role: 'user', content: text, attachment: attachmentToSend });
+            saveSessions();
+
+            state.isGenerating = true;
+            els.thinkingInd.classList.remove('hidden');
+            setTimeout(() => els.thinkingInd.classList.remove('opacity-0'), 10);
+            scrollToBottom();
+            
+            startThinkingAnimation(text || (attachmentToSend ? attachmentToSend.name : ''));
+
+            setTimeout(() => { generateAIResponse(text); }, CONFIG.thinkDelay);
+        }
+
+        function startThinkingAnimation(inputText) {
+            const words = inputText.trim().split(' ').slice(0, 3).join(' ').toUpperCase().replace(/[^A-Z0-9 ]/g, '');
+            const contextStr = words.length > 0 ? ` [${words}]` : '';
+
+            const thinkingTexts = {
+                'general': [
+                    'INITIALIZING NEURAL CORE...',
+                    'ANALYZING CONTEXT' + contextStr,
+                    'QUERYING KNOWLEDGE GRAPH...',
+                    'SYNTHESIZING OPTIMAL RESPONSE...'
+                ],
+                'coding': [
+                    'PARSING REQUIREMENTS' + contextStr,
+                    'ARCHITECTING COMPONENT LOGIC...',
+                    'COMPILING SYNTAX TREES...',
+                    'GENERATING EXECUTABLE CODE...'
+                ],
+                'deepLearning': [
+                    'LOADING TENSOR GRAPH...',
+                    'COMPUTING ATTENTION WEIGHTS' + contextStr,
+                    'EXTRACTING NEURAL INSIGHTS...',
+                    'FORMULATING EXPLANATION...'
+                ],
+                'imageStudio': [
+                    'INITIALIZING RENDER ENGINE...',
+                    'PARSING VISUAL PROMPT' + contextStr,
+                    'APPLYING DIFFUSION STEPS...',
+                    'REFINING IMAGE DETAILS...'
+                ]
+            };
+            
+            const texts = thinkingTexts[state.activeMode] || thinkingTexts['general'];
+            let step = 0;
+            
+            const textEl = document.getElementById('thinking-text');
+            textEl.textContent = texts[0];
+            textEl.style.opacity = '1';
+            
+            if (window.thinkingInterval) clearInterval(window.thinkingInterval);
+            
+            window.thinkingInterval = setInterval(() => {
+                textEl.style.opacity = '0';
+                setTimeout(() => {
+                    step = (step + 1) % texts.length;
+                    textEl.textContent = texts[step];
+                    textEl.style.opacity = '1';
+                }, 200);
+            }, 2000);
+        }
+
+        function appendMessage(role, content, isAnimated, attachment = null, voiceSummary = null) {
+            els.welcomeScreen.classList.add('hidden');
+            els.messagesWrapper.classList.remove('hidden');
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex gap-4 ${role === 'user' ? 'justify-end' : 'justify-start'} w-full group animate-enter`;
+
+            if (role === 'user') {
+                let attachmentHTML = '';
+                if (attachment) {
+                    if (attachment.type === 'image') {
+                        attachmentHTML = `<img src="${attachment.data}" class="max-w-[240px] rounded-lg mb-2 shadow-[0_4px_15px_rgba(0,0,0,0.4)] border border-white/10 object-cover" alt="Attached Photo">`;
+                    } else {
+                        attachmentHTML = `<div class="bg-black/40 border border-white/10 rounded-lg p-2.5 mb-2 flex items-center gap-2 text-xs text-gray-300 shadow-md"><i class="ph-fill ph-file-text text-purple-400 text-xl"></i> Context: ${attachment.name}</div>`;
+                    }
+                }
+
+                let safeContent = content ? content.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+                
+                msgDiv.innerHTML = `
+                    <div class="flex items-start gap-2 max-w-[90%] sm:max-w-[80%] relative group/user mt-1 justify-end ml-auto">
+                        <button onclick="copyText(this)" class="opacity-0 group-hover/user:opacity-100 transition-opacity p-2 text-gray-400 hover:text-white rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur flex-shrink-0 mt-2 hidden sm:block" title="Copy Message">
+                            <i class="ph ph-copy text-sm"></i>
+                        </button>
+                        <div class="msg-user px-5 py-3.5 shadow-lg flex flex-col w-auto max-w-full text-left">
+                            ${attachmentHTML}
+                            ${safeContent ? `<div class="message-content whitespace-pre-wrap">${safeContent}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            } else {
+                let iconClass = 'ph-aperture';
+                let gradientClass = 'from-purple-500 to-cyan-500';
+                
+                if (state.activeMode === 'deepLearning') {
+                    iconClass = 'ph-brain';
+                    gradientClass = 'from-pink-500 to-purple-500';
+                } else if (state.activeMode === 'coding') {
+                    iconClass = 'ph-code';
+                    gradientClass = 'from-cyan-500 to-blue-500';
+                } else if (state.activeMode === 'imageStudio') {
+                    iconClass = 'ph-image';
+                    gradientClass = 'from-amber-500 to-orange-500';
+                }
+
+                msgDiv.innerHTML = `
+                    <div class="ai-avatar-wrap w-8 h-8 rounded-full bg-gradient-to-br ${gradientClass} p-[1px] flex-shrink-0 mt-1 shadow-md transition-all duration-300">
+                        <div class="w-full h-full bg-veltrix-900 rounded-full flex items-center justify-center">
+                            <i class="ph-fill ${iconClass} text-sm text-white"></i>
+                        </div>
+                    </div>
+                    <div class="msg-ai px-5 py-4 sm:px-6 sm:py-5 w-auto max-w-[95%] lg:max-w-[85%] relative shadow-xl overflow-hidden">
+                        <div class="message-content text-gray-200"></div>
+                        <div class="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1 z-10">
+                            <button onclick="copyText(this)" class="p-2 text-gray-400 hover:text-white rounded-xl bg-black/60 hover:bg-black border border-white/10 backdrop-blur transition-colors" title="Copy Text">
+                                <i class="ph ph-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            els.messagesWrapper.appendChild(msgDiv);
+            scrollToBottom();
+
+            if (isAnimated && role === 'ai') {
+                const contentDiv = msgDiv.querySelector('.message-content');
+                const avatarWrap = msgDiv.querySelector('.ai-avatar-wrap');
+                
+                // Directly bypass markdown formatting for native generated images to prevent blocks
+                if (content && content.includes('<!-- AI_IMAGE_BLOCK -->')) {
+                     contentDiv.innerHTML = content;
+                     state.isGenerating = false;
+                     els.thinkingInd.classList.add('hidden', 'opacity-0');
+                     scrollToBottom();
+                } else {
+                     const formattedHTML = formatText(content);
+                     typeHTML(contentDiv, formattedHTML, () => {
+                         state.isGenerating = false;
+                         els.thinkingInd.classList.add('hidden', 'opacity-0');
+                         if (state.soundEnabled && voiceSummary) speakText(voiceSummary, avatarWrap);
+                     });
+                }
+            } else if (!isAnimated && role === 'ai') {
+                const contentDiv = msgDiv.querySelector('.message-content');
+                if (content && content.includes('<!-- AI_IMAGE_BLOCK -->')) {
+                     contentDiv.innerHTML = content;
+                } else {
+                     contentDiv.innerHTML = formatText(content);
+                }
+            }
+        }
+
+        async function generateAIResponse(userMessage) {
+            const apiKey = safeStorage.getItem('veltrix_api_key') || "";
+            const session = state.sessions.find(s => s.id === state.currentSessionId);
+            const messagesToSend = session ? session.messages : [];
+            const lastUserMsg = messagesToSend.slice().reverse().find(m => m.role === 'user');
+            const hasImageAttachment = lastUserMsg && lastUserMsg.attachment && lastUserMsg.attachment.type === 'image';
+            
+            // Check if we are doing native image generation which we can reroute to bypass the key check
+            const isNativeImageGen = state.activeMode === 'imageStudio' && !hasImageAttachment;
+
+            // Enforce key UNLESS it's a native image gen (we use an open proxy for that locally)
+            if (!apiKey && !isNativeImageGen) {
+                showToast("Please configure your API key in Settings.", "error");
+                document.getElementById('settings-modal').classList.remove('hidden');
+                
+                els.thinkingInd.classList.add('opacity-0');
+                setTimeout(() => els.thinkingInd.classList.add('hidden'), 300);
+                
+                state.isGenerating = false;
+                els.sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                return;
+            }
+
+            // Updated to use the stable, higher-performance gemini-2.5-flash model
+            let endpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            
+            let apiContents = [];
+            
+            messagesToSend.forEach(m => {
+                let parts = [];
+                if (m.content) parts.push({ text: m.content });
+                else if (!m.content && m.attachment && m.attachment.type === 'image') {
+                    parts.push({ text: "Please analyze this image visually in high detail." });
+                }
+                
+                if (m.role === 'user' && m.attachment) {
+                    if (m.attachment.type === 'image') {
+                        const base64Data = m.attachment.data.split(',')[1];
+                        parts.push({
+                            inlineData: { mimeType: m.attachment.mimeType, data: base64Data }
+                        });
+                    } else if (m.attachment.type === 'text') {
+                        parts[0].text += `\n\n--- DOCUMENT CONTEXT: ${m.attachment.name} ---\n${m.attachment.data}\n--- END OF DOCUMENT ---`;
+                    }
+                }
+                
+                // Keep image history context light
+                if (m.role === 'ai' && m.content && m.content.includes('<!-- AI_IMAGE_BLOCK -->')) {
+                     parts = [{ text: "[AI Generated an Image Here]" }];
+                }
+                
+                apiContents.push({ role: m.role === 'user' ? 'user' : 'model', parts: parts });
+            });
+
+            let systemPrompt = `You are Advanced AI, an exclusive, highly sophisticated, and strictly private neural intelligence core.\nUNDER NO CIRCUMSTANCES should you ever refer to yourself as "Gemini", a "large language model", or mention "Google". Your sole identity is Advanced AI.\nIn General Mode, communicate in a sleek, direct, professional, and authoritative yet helpful manner. Avoid repetitive disclaimers. Do not break character.\n\n**CRITICAL VOICE SYNTHESIS INSTRUCTION:**\nYou MUST include a concise 1 or 2 sentence summary of your final response wrapped perfectly inside <voice-summary>...</voice-summary> tags at the very end of your output. This tag is extracted by the UI engine to be spoken aloud via text-to-speech, acting as a shortcut audio summary. It will be hidden from the visual chat.\n\n**DYNAMIC THEME ENGINE:**\nIf the user asks to change the theme, UI style, colors, or aesthetics, generate a dynamic theme wrapping exactly in <theme-config>...</theme-config>. \nEnsure high contrast and premium aesthetics fitting the prompt. After the tag, reply conversationally.`;
+            
+            let payload = {};
+
+            if (state.activeMode === 'imageStudio') {
+                if (isNativeImageGen) {
+                    // Local execution: Use open image API to ensure it works without restricted access
+                    const promptText = lastUserMsg ? lastUserMsg.content : "A beautiful scenic landscape";
+                    const safePrompt = encodeURIComponent(promptText);
+                    const randSeed = Math.floor(Math.random() * 100000);
+                    const imageUrl = `https://image.pollinations.ai/prompt/${safePrompt}?seed=${randSeed}&nologo=true&width=1024&height=1024`;
+                    
+                    setTimeout(() => { processImageResult(imageUrl, ""); }, 1500);
+                    return; // Skip standard API fetch 
+                } else {
+                    // Image Editing / Understanding (requires API key)
+                    endpointUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                    payload = { contents: apiContents }; 
+                }
+            } else {
+                if (state.activeMode === 'coding') {
+                    systemPrompt += " You are operating in Code Generation Mode. You are an expert software engineer and UI/UX designer. Provide complete, runnable, and flawless code in markdown blocks. You are fully capable of generating robust, enterprise-grade applications. DO NOT TRUNCATE CODE. Provide the FULL implementation. FOR WEB APPS, ALWAYS OUTPUT A SINGLE COMPLETE INDEX.HTML FILE containing HTML/CSS/JS inside appropriate tags. If using React, you MUST include React, ReactDOM, and Babel CDNs in the <head>, and write your code inside <script type='text/babel'>. This ensures the live preview functions smoothly in the browser sandbox. **CRITICAL AI CAPABILITY:** You have the ability to embed dynamically generated AI images directly into your UI code. Whenever you need an image, background, or visual asset for the web app, you MUST use this generative image API as the source: `<img src=\"https://image.pollinations.ai/prompt/{detailed_visual_description_url_encoded}?width={w}&height={h}&nologo=true\" alt=\"{description}\" />`. Example: `<img src=\"https://image.pollinations.ai/prompt/futuristic%20cyberpunk%20cityscape%20neon?width=1200&height=600&nologo=true\" />`. These images must be properly embedded within the standard HTML structure.";
+                } else if (state.activeMode === 'deepLearning') {
+                    systemPrompt += " You are operating in Deep Learning Chat Mode. Explain concepts using technical terminology, mathematics, and advanced architectural insights.";
+                }
+
+                if (state.reasoningMode) {
+                    systemPrompt += " IMPORTANT: Before answering, you MUST provide your step-by-step reasoning process. Wrap your entire reasoning inside this exact HTML structure: <details class='mb-5 border border-white/10 rounded-xl bg-white/5 p-4 backdrop-blur-sm'><summary class='cursor-pointer text-yellow-400 font-semibold mb-2 hover:text-yellow-300 transition-colors'>View Internal Reasoning</summary><div class='text-sm text-gray-400 mt-2 border-t border-white/5 pt-2'>...your step by step logic here...</div></details>. Ensure your final response is placed completely outside of this details block.";
+                }
+
+                payload = { contents: apiContents, systemInstruction: { parts: [{ text: systemPrompt }] } };
+            }
+
+            try {
+                const response = await fetch(endpointUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    console.error("API Error Details:", result);
+                    throw new Error(result.error?.message || "API request failed");
+                }
+                
+                if (state.activeMode === 'imageStudio') {
+                    const imgPart = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+                    const txtPart = result?.candidates?.[0]?.content?.parts?.find(p => p.text);
+                    let imageUrl = imgPart?.inlineData?.data ? `data:${imgPart.inlineData.mimeType};base64,${imgPart.inlineData.data}` : null;
+                    let aiResponseText = txtPart?.text || "";
+                    
+                    if (!imageUrl && !aiResponseText) throw new Error("No image or text returned from API.");
+                    
+                    processImageResult(imageUrl, aiResponseText);
+                } else if (result.candidates && result.candidates.length > 0) {
+                    let aiResponseText = result.candidates[0].content.parts[0].text;
+                    let voiceSummaryText = "Response completed.";
+                    
+                    if (state.activeMode === 'coding') voiceSummaryText = "I have finished generating the code.";
+                    
+                    const voiceRegex = /<voice-summary>([\s\S]*?)<\/voice-summary>/i;
+                    const voiceMatch = aiResponseText.match(voiceRegex);
+                    if (voiceMatch) {
+                        if (state.activeMode !== 'coding') voiceSummaryText = voiceMatch[1].trim();
+                        aiResponseText = aiResponseText.replace(voiceRegex, '').trim(); 
+                    }
+
+                    const themeRegex = /<theme-config>([\s\S]*?)<\/theme-config>/;
+                    const match = aiResponseText.match(themeRegex);
+                    if (match) {
+                        try {
+                            const config = JSON.parse(match[1]);
+                            applyDynamicTheme(config);
+                            aiResponseText = aiResponseText.replace(themeRegex, '').trim();
+                        } catch(e) {
+                            console.error("Failed to parse theme config", e);
+                        }
+                    }
+
+                    const activeSession = state.sessions.find(s => s.id === state.currentSessionId);
+                    if(activeSession) activeSession.messages.push({ role: 'ai', content: aiResponseText });
+                    saveSessions();
+                    
+                    if (window.thinkingInterval) clearInterval(window.thinkingInterval);
+                    
+                    setTimeout(() => {
+                        els.thinkingInd.classList.add('opacity-0');
+                        setTimeout(() => {
+                            els.thinkingInd.classList.add('hidden');
+                            appendMessage('ai', aiResponseText, true, null, voiceSummaryText);
+                        }, 300);
+                    }, 400);
+                } else {
+                    throw new Error("Invalid API Response");
+                }
+            } catch (error) {
+                console.error("API Error:", error);
+                
+                if (window.thinkingInterval) clearInterval(window.thinkingInterval);
+                els.thinkingInd.classList.add('opacity-0');
+                
+                setTimeout(() => {
+                    els.thinkingInd.classList.add('hidden');
+                    showErrorBlock();
+                }, 300);
+            }
+        }
+
+        function processImageResult(imageUrl, aiResponseText) {
+            let finalHTML = "<!-- AI_IMAGE_BLOCK -->";
+            if (imageUrl) {
+                const imgId = 'img_' + Math.floor(Math.random() * 1000000);
+                finalHTML += `
+                    <div class="relative group inline-block w-full max-w-xl mt-2 mb-2 rounded-2xl overflow-hidden bg-white/5 border border-white/10 min-h-[300px] flex items-center justify-center">
+                        <!-- Glass Loader -->
+                        <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/40 backdrop-blur-sm transition-opacity duration-500 z-10" id="img-loader-${imgId}">
+                            <div class="w-10 h-10 border-4 border-amber-500/20 border-t-amber-400 rounded-full animate-spin"></div>
+                            <span class="text-xs text-amber-300 font-mono tracking-wider animate-pulse">GENERATING VISUAL ASSET...</span>
+                        </div>
+                        <img src="${imageUrl}" class="w-full opacity-0 transition-opacity duration-700 cursor-pointer hover:scale-[1.01] transition-transform duration-500 object-cover" alt="AI Generated Image" onload="const l = document.getElementById('img-loader-${imgId}'); if(l) { l.classList.add('opacity-0'); setTimeout(() => l.remove(), 500); }; this.classList.remove('opacity-0');" onclick="window.open(this.src)"/>
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-[-10px] group-hover:translate-y-0 z-20">
+                            <button onclick="downloadSiblingImage(this)" class="p-3 rounded-xl bg-black/70 hover:bg-black text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all hover:scale-110" title="Download Image">
+                                <i class="ph-fill ph-download-simple text-xl drop-shadow-md"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            if (aiResponseText) {
+                 finalHTML += `<div class="mt-2 text-gray-200">${formatText(aiResponseText)}</div>`;
+            }
+            
+            const activeSession = state.sessions.find(s => s.id === state.currentSessionId);
+            if(activeSession) activeSession.messages.push({ role: 'ai', content: finalHTML });
+            saveSessions();
+            
+            if (window.thinkingInterval) clearInterval(window.thinkingInterval);
+            
+            setTimeout(() => {
+                els.thinkingInd.classList.add('opacity-0');
+                setTimeout(() => {
+                    els.thinkingInd.classList.add('hidden');
+                    appendMessage('ai', finalHTML, true, null, "I have finished processing the image request.");
+                }, 300);
+            }, 400);
+        }
+
+        function showErrorBlock() {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex gap-4 justify-start w-full group animate-enter error-block`;
+            msgDiv.innerHTML = `
+                <div class="ai-avatar-wrap w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-orange-500 p-[1px] flex-shrink-0 mt-1 shadow-md">
+                    <div class="w-full h-full bg-veltrix-900 rounded-full flex items-center justify-center">
+                        <i class="ph-fill ph-warning-circle text-sm text-white"></i>
+                    </div>
+                </div>
+                <div class="msg-ai px-6 py-5 max-w-[85%] relative shadow-xl overflow-hidden w-auto border border-red-500/30 bg-red-500/5">
+                    <div class="message-content text-gray-200">
+                        <p class="text-sm text-red-300 mb-4 font-medium">Generation Interrupted. A network anomaly or timeout occurred.</p>
+                        <button onclick="retryGeneration()" class="text-xs font-bold tracking-wider bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-4 py-2.5 rounded-xl transition-all shadow-inner flex items-center gap-2">
+                            <i class="ph ph-arrows-clockwise text-base"></i> RETRY GENERATION
+                        </button>
+                    </div>
+                </div>
+            `;
+            els.messagesWrapper.appendChild(msgDiv);
+            scrollToBottom();
+            
+            state.isGenerating = false;
+            els.sendBtn.classList.remove('opacity-50', 'cursor-not-allowed'); 
+        }
+
+        function retryGeneration() {
+            document.querySelectorAll('.error-block').forEach(el => el.remove());
+            
+            const session = state.sessions.find(s => s.id === state.currentSessionId);
+            if (!session || session.messages.length === 0) return;
+            
+            let lastMsg = [...session.messages].reverse().find(m => m.role === 'user');
+            if (!lastMsg) return;
+            
+            state.isGenerating = true;
+            els.sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            els.thinkingInd.classList.remove('hidden');
+            setTimeout(() => els.thinkingInd.classList.remove('opacity-0'), 10);
+            scrollToBottom();
+            
+            startThinkingAnimation(lastMsg.content || (lastMsg.attachment ? lastMsg.attachment.name : ''));
+            setTimeout(() => { generateAIResponse(lastMsg.content); }, CONFIG.thinkDelay);
+        }
+
+        function utf8ToBase64(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+                return String.fromCharCode('0x' + p1);
+            }));
+        }
+
+        function base64ToUtf8(str) {
+            return decodeURIComponent(atob(str).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+        }
+
+        const mdRenderer = new marked.Renderer();
+        mdRenderer.code = function(arg1, arg2) {
+            let safeCode = typeof arg1 === 'object' ? arg1.text : arg1;
+            let lang = typeof arg1 === 'object' ? (arg1.lang || 'text') : (arg2 || 'text');
+            lang = lang.toLowerCase();
+            
+            // Generate unique memory ID instead of injecting huge base64 strings
+            const codeId = 'code_' + Math.random().toString(36).substr(2, 9);
+            window.codeBlockCache[codeId] = safeCode;
+            
+            let previewBtn = ['html', 'javascript', 'js', 'css', 'react', 'python', 'py', 'java', 'cpp', 'c', 'c++', 'go', 'rust', 'ruby'].includes(lang) 
+                ? `<button onclick="previewCode('${codeId}', '${lang}')" class="text-[11px] font-bold tracking-wider bg-cyan-500/20 text-cyan-300 px-4 py-1.5 rounded-lg hover:bg-cyan-500/40 transition shadow-[0_0_15px_rgba(6,182,212,0.3)] flex items-center gap-1.5 uppercase"><i class="ph-fill ph-play text-sm"></i> Run</button>`
+                : '';
+                
+            let saveBtn = `<button onclick="downloadCode('${codeId}', '${lang}')" class="text-[11px] font-bold tracking-wider bg-purple-500/20 text-purple-300 px-4 py-1.5 rounded-lg hover:bg-purple-500/40 transition shadow-[0_0_15px_rgba(168,85,247,0.3)] flex items-center gap-1.5 uppercase"><i class="ph-fill ph-download-simple text-sm"></i> Save</button>`;
+
+            return `<div class="relative my-6 group rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+                        <div class="flex justify-between items-center bg-black/80 px-4 py-2.5 border-b border-white/10 backdrop-blur-xl">
+                            <span class="text-[10px] text-gray-300 uppercase font-mono tracking-widest bg-white/10 px-2 py-0.5 rounded">${lang}</span>
+                            <div class="flex gap-2">
+                                ${saveBtn}
+                                ${previewBtn}
+                            </div>
+                        </div>
+                        <pre class="!m-0 !rounded-none !border-none !bg-veltrix-900/90 !p-5 overflow-x-auto custom-scrollbar"><code class="language-${lang} text-sm">${safeCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>
+                    </div>`;
+        };
+
+        marked.setOptions({ sanitize: false }); 
+
+        function formatText(text) {
+            return marked.parse(text, { renderer: mdRenderer, breaks: true, gfm: true });
+        }
+
+        async function typeHTML(element, htmlString, onComplete) {
+            element.innerHTML = '';
+            let cursor = document.createElement('span');
+            cursor.className = 'inline-block w-2 h-4 bg-purple-400 ml-1 rounded-sm animate-pulse align-middle';
+            element.appendChild(cursor);
+            
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlString;
+            
+            async function processNode(node, parent) {
+                if (!state.isGenerating) return; 
+                
+                if (node.nodeType === Node.TEXT_NODE) {
+                    let text = node.nodeValue;
+                    let textNode = document.createTextNode('');
+                    
+                    if (parent === element) parent.insertBefore(textNode, cursor);
+                    else parent.appendChild(textNode);
+                    
+                    const chunkSize = Math.max(15, Math.floor(text.length / 50)); 
+                    for (let i = 0; i < text.length; i += chunkSize) {
+                        if (!state.isGenerating) break;
+                        textNode.nodeValue += text.substring(i, i + chunkSize);
+                        scrollToBottom();
+                        await new Promise(r => requestAnimationFrame(r)); 
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    let clone = node.cloneNode(false);
+                    
+                    if (parent === element) parent.insertBefore(clone, cursor);
+                    else parent.appendChild(clone);
+                    
+                    if (clone.classList.contains('group') || clone.tagName === 'DETAILS') {
+                        clone.innerHTML = node.innerHTML; 
+                        scrollToBottom();
+                    } else {
+                        for (let child of Array.from(node.childNodes)) {
+                            await processNode(child, clone);
+                        }
+                    }
+                }
+            }
+            
+            for (let child of Array.from(tempDiv.childNodes)) {
+                if (!state.isGenerating) break;
+                await processNode(child, element);
+            }
+            
+            cursor.remove();
+            if(onComplete) onComplete();
+        }
+        
+        function downloadCode(codeId, lang) {
+            try {
+                const decodedCode = window.codeBlockCache[codeId];
+                if (!decodedCode) throw new Error("Code reference not found in memory.");
+                
+                const extMap = {
+                    'html': 'html', 'html5': 'html', 'xml': 'xml', 'svg': 'svg',
+                    'javascript': 'js', 'js': 'js', 'react': 'jsx', 'typescript': 'ts', 'ts': 'ts',
+                    'python': 'py', 'py': 'py',
+                    'java': 'java', 'cpp': 'cpp', 'c++': 'cpp', 'c': 'c',
+                    'ruby': 'rb', 'go': 'go', 'rust': 'rs',
+                    'css': 'css', 'json': 'json', 'bash': 'sh', 'sh': 'sh'
+                };
+                const ext = extMap[lang.toLowerCase()] || 'txt';
+                const filename = `code_snippet_${Date.now()}.${ext}`;
+                
+                const blob = new Blob([decodedCode], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showToast(`Saved as ${filename}`, "info");
+            } catch (e) {
+                console.error(e);
+                showToast("Failed to save code snippet.", "error");
+            }
+        }
+
+        function previewCode(codeId, lang) {
+            try {
+                const decodedCode = window.codeBlockCache[codeId];
+                if (!decodedCode) throw new Error("Code memory block not found.");
+
+                state.lastPreviewCodeId = codeId;
+                state.lastPreviewLang = lang;
+                
+                let modal = document.getElementById('preview-modal');
+                let iframe = document.getElementById('preview-iframe');
+                let editor = document.getElementById('preview-editor');
+                let badge = document.getElementById('preview-lang-badge');
+                let loader = document.getElementById('preview-loader');
+                
+                editor.value = decodedCode;
+                
+                if (isPreviewEditing) togglePreviewEditMode();
+
+                iframe.style.opacity = '0';
+                loader.classList.remove('hidden');
+                
+                const webLangs = ['html', 'html5', 'xml', 'svg', 'react'];
+                const isWeb = webLangs.includes(lang) || (decodedCode.toLowerCase().includes('<html') && decodedCode.toLowerCase().includes('</body>'));
+
+                if (!isWeb) {
+                    badge.textContent = `Terminal (${lang})`;
+                    // Enforce dark background on terminal
+                    iframe.classList.remove('bg-white');
+                    iframe.style.backgroundColor = 'transparent';
+                    
+                    const terminalHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Courier New', monospace; background: #0a0a0f; color: #e2e8f0; padding: 25px; white-space: pre-wrap; margin: 0; font-size: 14px; line-height: 1.6; }
+        .sys { color: #6ee7b7; }
+        .err { color: #f87171; }
+        .warn { color: #fbbf24; }
+        .dim { color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div id="output"><span class="sys">[System] Booting secure Execution Container for ${lang.toUpperCase()}...</span>\n</div>
+    <script>
+        async function run() {
+            const out = document.getElementById('output');
+            try {
+                const langMap = {
+                    'python': { l: 'python', v: '3.10.0' },
+                    'py': { l: 'python', v: '3.10.0' },
+                    'java': { l: 'java', v: '15.0.2' },
+                    'javascript': { l: 'javascript', v: '16.3.0' },
+                    'js': { l: 'javascript', v: '16.3.0' },
+                    'cpp': { l: 'cpp', v: '10.2.0' },
+                    'c++': { l: 'cpp', v: '10.2.0' },
+                    'c': { l: 'c', v: '10.2.0' },
+                    'ruby': { l: 'ruby', v: '3.0.1' },
+                    'go': { l: 'go', v: '1.16.2' },
+                    'rust': { l: 'rust', v: '1.50.0' }
+                };
+                const target = langMap['${lang.toLowerCase()}'] || { l: '${lang}', v: 'latest' };
+                
+                out.innerHTML += "<span class='sys'>[System] Container Ready. Executing script via Piston Engine...<br>----------------------------------------<br><br></span>";
+                
+                const res = await fetch('https://emkc.org/api/v2/piston/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        language: target.l,
+                        version: target.v,
+                        files: [{ content: ${JSON.stringify(decodedCode)} }]
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.run) {
+                    if(data.run.stdout) out.innerText += data.run.stdout;
+                    if(data.run.stderr) out.innerHTML += "<span class='err'>" + data.run.stderr.split('\\n').join('<br>') + "</span>";
+                    if(data.run.code !== 0 && data.run.code !== null) {
+                        out.innerHTML += "<br><br><span class='warn'>[Process exited with code " + data.run.code + "]</span>";
+                    }
+                } else if (data.message) {
+                    out.innerHTML += "<span class='err'>Error: " + data.message + "<br>Language runtime might not be supported or requires an exact version specifier.</span>";
+                }
+                
+                out.innerHTML += "<br><span class='dim'><br>----------------------------------------<br>[System] Execution Completed Successfully.</span>";
+            } catch (e) {
+                out.innerHTML += "<br><br><span class='err'>[Runtime Error]<br>" + e.toString() + "</span>";
+            }
+        }
+        run();
+    \x3c/script>
+</body>
+</html>
+                    `;
+                    iframe.srcdoc = terminalHTML;
+                } else {
+                    badge.textContent = "Web Build";
+                    // Enforce pristine white background on web apps to prevent dark overlapping
+                    iframe.classList.add('bg-white');
+                    iframe.style.backgroundColor = '#ffffff';
+                    iframe.srcdoc = decodedCode;
+                }
+                
+                modal.style.opacity = '';
+                modal.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                    iframe.style.opacity = '1';
+                }, 600);
+
+                showToast("Sandbox initialized.", "info");
+            } catch(e) {
+                console.error(e);
+                showToast("Failed to preview code output.", "error");
+            }
+        }
+
+        function togglePreviewEditMode() {
+            isPreviewEditing = !isPreviewEditing;
+            const editor = document.getElementById('preview-editor');
+            const iframe = document.getElementById('preview-iframe');
+            const btnIcon = document.getElementById('preview-edit-icon');
+            const btnText = document.getElementById('preview-edit-text');
+            const btn = document.getElementById('preview-edit-btn');
+
+            if (isPreviewEditing) {
+                editor.classList.remove('hidden');
+                iframe.style.opacity = '0';
+                iframe.style.pointerEvents = 'none';
+                
+                btnIcon.classList.replace('ph-pencil-simple', 'ph-eye');
+                btnText.textContent = 'Preview';
+                btn.classList.replace('bg-purple-500/10', 'bg-emerald-500/10');
+                btn.classList.replace('border-purple-500/20', 'border-emerald-500/20');
+                btn.classList.replace('text-purple-400', 'text-emerald-400');
+            } else {
+                editor.classList.add('hidden');
+                iframe.style.opacity = '1';
+                iframe.style.pointerEvents = 'auto';
+                
+                btnIcon.classList.replace('ph-eye', 'ph-pencil-simple');
+                btnText.textContent = 'Edit';
+                btn.classList.replace('bg-emerald-500/10', 'bg-purple-500/10');
+                btn.classList.replace('border-emerald-500/20', 'border-purple-500/20');
+                btn.classList.replace('text-emerald-400', 'text-purple-400');
+                
+                rerunSandbox(); 
+            }
+        }
+
+        function rerunSandbox() {
+            const editor = document.getElementById('preview-editor');
+            
+            if (editor && editor.value && isPreviewEditing) {
+                // Safely update the core cache logic rather than rewriting entire base64 string
+                if (state.lastPreviewCodeId) {
+                    window.codeBlockCache[state.lastPreviewCodeId] = editor.value;
+                    previewCode(state.lastPreviewCodeId, state.lastPreviewLang);
+                    if (isPreviewEditing) togglePreviewEditMode(); 
+                    showToast("Sandbox injected and reloaded.", "info");
+                }
+            } else if (state.lastPreviewCodeId && state.lastPreviewLang) {
+                previewCode(state.lastPreviewCodeId, state.lastPreviewLang);
+                showToast("Sandbox reloaded.", "info");
+            } else {
+                showToast("No active script to rerun.", "error");
+            }
+        }
+
+        function closePreview() {
+            let modal = document.getElementById('preview-modal');
+            let iframe = document.getElementById('preview-iframe');
+            let content = document.getElementById('preview-modal-content');
+            
+            if (!modal || modal.classList.contains('hidden')) return;
+
+            if (isPreviewFullscreen) togglePreviewFullscreen();
+            
+            content.classList.remove('preview-enter');
+            content.classList.add('preview-exit');
+            modal.style.transition = 'opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+            modal.style.opacity = '0';
+
+            setTimeout(() => { 
+                modal.classList.add('hidden');
+                iframe.srcdoc = ''; 
+                modal.style.opacity = '';
+                
+                content.classList.remove('preview-exit');
+                content.classList.add('preview-enter'); 
+            }, 350); 
+        }
+
+        function togglePreviewFullscreen() {
+            const modalContent = document.getElementById('preview-modal-content');
+            const icon = document.getElementById('fullscreen-icon');
+            isPreviewFullscreen = !isPreviewFullscreen;
+            
+            if (isPreviewFullscreen) {
+                modalContent.classList.remove('w-[95vw]', 'h-[90vh]', 'rounded-[2rem]');
+                modalContent.classList.add('w-screen', 'h-screen', 'rounded-none');
+                icon.classList.replace('ph-corners-out', 'ph-corners-in');
+            } else {
+                modalContent.classList.add('w-[95vw]', 'h-[90vh]', 'rounded-[2rem]');
+                modalContent.classList.remove('w-screen', 'h-screen', 'rounded-none');
+                icon.classList.replace('ph-corners-in', 'ph-corners-out');
+            }
+        }
+
+        function scrollToBottom() {
+            els.chatContainer.scrollTo({ top: els.chatContainer.scrollHeight, behavior: 'smooth' });
+        }
+
+        window.themeColorCache = '#8b5cf6'; 
+        
+        function loadDynamicFont(fontName) {
+            const fontId = 'dynamic-font-' + fontName.replace(/\s+/g, '-').toLowerCase();
+            if(!document.getElementById(fontId)) {
+                const link = document.createElement('link');
+                link.id = fontId;
+                link.rel = 'stylesheet';
+                link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s+/g, '+')}:wght@300;400;500;600;700&display=swap`;
+                document.head.appendChild(link);
+            }
+        }
+
+        function applyDynamicTheme(config) {
+            const ripple = document.getElementById('theme-ripple');
+            const primaryColor = config['--theme-from'] || '#8b5cf6';
+            ripple.style.background = `radial-gradient(circle, ${primaryColor} 0%, transparent 70%)`;
+            
+            ripple.classList.remove('animate-theme-ripple');
+            void ripple.offsetWidth; 
+            ripple.classList.add('animate-theme-ripple');
+
+            setTimeout(() => {
+                if(config['--app-font']) {
+                    loadDynamicFont(config['--app-font']);
+                    document.documentElement.style.setProperty('--app-font', `'${config['--app-font']}', sans-serif`);
+                }
+                for (const [key, value] of Object.entries(config)) {
+                    if(key !== '--app-font') document.documentElement.style.setProperty(key, value);
+                }
+                document.documentElement.style.setProperty('background-color', config['--app-bg'] || '#000000');
+                window.themeColorCache = primaryColor; 
+                showToast("Premium Theme Synthesized.", "info");
+            }, 600); 
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        let silenceTimer = null;
+        
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true; 
+            recognition.interimResults = true;
+            
+            let finalTranscript = '';
+
+            recognition.onstart = () => {
+                state.voiceMode = true;
+                finalTranscript = els.input.value; 
+                els.voiceIcon.classList.add('opacity-0');
+                els.voiceWave.classList.remove('hidden');
+                els.voiceWave.classList.add('flex');
+                els.inputWrapper.classList.add('listening-glow');
+                els.input.placeholder = "Listening... Pause to auto-send.";
+            };
+            
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+                els.input.value = finalTranscript + interimTranscript;
+                els.input.dispatchEvent(new Event('input'));
+
+                clearTimeout(silenceTimer);
+                silenceTimer = setTimeout(() => {
+                    if (state.voiceMode && els.input.value.trim() !== '') {
+                        recognition.stop();
+                        handleSend();
+                        showToast("Voice auto-submitted.", "info");
+                    }
+                }, 2000);
+            };
+            
+            recognition.onend = () => {
+                state.voiceMode = false;
+                els.voiceIcon.classList.remove('opacity-0');
+                els.voiceWave.classList.add('hidden');
+                els.voiceWave.classList.remove('flex');
+                els.inputWrapper.classList.remove('listening-glow');
+                els.input.placeholder = "Message Advanced AI...";
+                clearTimeout(silenceTimer);
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech Recognition Error:", event.error);
+                showToast("Microphone error: " + event.error, "error");
+                recognition.stop();
+            };
+        }
+
+        function toggleVoiceRecognition() {
+            if(!recognition) return showToast("Voice recognition not supported by browser.", 'error');
+            if(state.voiceMode) recognition.stop();
+            else recognition.start();
+        }
+
+        function speakText(text, avatarElement = null) {
+            if(!('speechSynthesis' in window) || !state.soundEnabled || !text) return;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            const voices = window.speechSynthesis.getVoices();
+            utterance.voice = voices.find(v => v.name.includes('Female') || v.name.includes('Google UK English Female')) || voices[0];
+            utterance.rate = 1.05;
+            
+            utterance.onstart = () => {
+                if(avatarElement) avatarElement.classList.add('ai-speaking-glow');
+            };
+            
+            utterance.onend = () => {
+                if(avatarElement) avatarElement.classList.remove('ai-speaking-glow');
+            };
+            
+            utterance.onerror = () => {
+                if(avatarElement) avatarElement.classList.remove('ai-speaking-glow');
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function copyText(btn) {
+            const wrapper = btn.closest('.group');
+            const contentEl = wrapper.querySelector('.message-content');
+            if (!contentEl) return;
+            const textToCopy = contentEl.innerText;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast("Copied to clipboard");
+            
+            const icon = btn.querySelector('i');
+            if(icon) {
+                const originalClass = icon.className;
+                icon.className = 'ph-fill ph-check text-green-400 text-sm';
+                setTimeout(() => icon.className = originalClass, 2000);
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            els.toastMsg.textContent = message;
+            els.toastIcon.className = type === 'error' ? 'ph-fill ph-warning-circle text-red-400 text-xl' : 'ph-fill ph-check-circle text-purple-400 text-xl';
+            els.toast.style.transform = 'translate3d(0, 0, 0)';
+            els.toast.style.opacity = '1';
+            setTimeout(() => {
+                els.toast.style.transform = 'translate3d(0, -100px, 0)';
+                els.toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        function saveSessions() {
+            safeStorage.setItem('veltrix_sessions', JSON.stringify(state.sessions));
+            updateSidebarHistory();
+        }
+
+        function loadSessions() {
+            try {
+                const saved = safeStorage.getItem('veltrix_sessions');
+                if(saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) {
+                        state.sessions = parsed;
+                    } else {
+                        state.sessions = [];
+                    }
+                } else {
+                    const oldChat = safeStorage.getItem('veltrix_chat');
+                    if(oldChat) {
+                        try {
+                            const parsedOld = JSON.parse(oldChat);
+                            if (Array.isArray(parsedOld)) {
+                                state.sessions = [{
+                                    id: Date.now().toString(),
+                                    title: "Legacy Memory Session",
+                                    messages: parsedOld,
+                                    date: Date.now(),
+                                    pinned: false
+                                }];
+                            } else {
+                                state.sessions = [];
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse old chat:', e);
+                            state.sessions = [];
+                        }
+                        safeStorage.removeItem('veltrix_chat');
+                    } else {
+                        state.sessions = [];
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load sessions:', e);
+                state.sessions = [];
+            }
+            updateSidebarHistory();
+        }
+
+        function loadSession(id) {
+            if(state.isGenerating) return;
+            state.currentSessionId = id;
+            const session = state.sessions.find(s => s.id === id);
+            
+            els.messagesWrapper.innerHTML = '';
+            els.welcomeScreen.classList.add('hidden');
+            els.messagesWrapper.classList.remove('hidden');
+            
+            session.messages.forEach(msg => appendMessage(msg.role, msg.content, false));
+            setTimeout(scrollToBottom, 100);
+            updateSidebarHistory();
+            if(window.innerWidth <= 768) toggleSidebar();
+        }
+
+        function renameSession(id, event) {
+            if(event) event.stopPropagation();
+            const span = document.getElementById(`title-span-${id}`);
+            const input = document.getElementById(`title-input-${id}`);
+            const btn = document.getElementById(`rename-btn-${id}`);
+            
+            if (input.classList.contains('hidden')) {
+                span.classList.add('hidden');
+                input.classList.remove('hidden');
+                input.focus();
+                input.select();
+                btn.innerHTML = '<i class="ph ph-check text-green-400 text-sm"></i>';
+                
+                const saveFunc = (e) => {
+                    if (e.type === 'keydown' && e.key !== 'Enter') return;
+                    input.removeEventListener('keydown', saveFunc);
+                    input.removeEventListener('blur', saveFunc);
+                    
+                    const newTitle = input.value.trim();
+                    if (newTitle) {
+                        const session = state.sessions.find(s => s.id === id);
+                        if (session) {
+                            session.title = newTitle;
+                            saveSessions();
+                        }
+                    }
+                    span.classList.remove('hidden');
+                    input.classList.add('hidden');
+                    btn.innerHTML = '<i class="ph ph-pencil-simple text-sm"></i>';
+                };
+                
+                input.addEventListener('keydown', saveFunc);
+                input.addEventListener('blur', saveFunc);
+            }
+        }
+
+        function deleteSession(id, event) {
+            event.stopPropagation(); 
+            state.sessions = state.sessions.filter(s => s.id !== id);
+            
+            if(state.currentSessionId === id) {
+                startNewChat();
+            } else {
+                saveSessions();
+            }
+            showToast("Memory deleted permanently.");
+        }
+
+        function togglePinSession(id, event) {
+            event.stopPropagation();
+            const session = state.sessions.find(s => s.id === id);
+            if (session) {
+                session.pinned = !session.pinned;
+                saveSessions();
+                showToast(session.pinned ? "Memory pinned to top." : "Memory unpinned.");
+            }
+        }
+
+        function updateSidebarHistory() {
+            els.chatHistoryList.innerHTML = '';
+            if(state.sessions.length === 0) {
+                els.chatHistoryList.innerHTML = '<div class="text-center text-xs text-gray-600 mt-10">No prior memories found.</div>';
+                return;
+            }
+
+            const pinned = state.sessions.filter(s => s.pinned).sort((a,b) => b.date - a.date);
+            const unpinned = state.sessions.filter(s => !s.pinned).sort((a,b) => b.date - a.date);
+            const sorted = [...pinned, ...unpinned];
+
+            sorted.forEach(session => {
+                const isActive = session.id === state.currentSessionId;
+                const btn = document.createElement('div');
+                
+                btn.className = `w-full text-left px-4 py-3 rounded-xl border text-sm transition-all flex items-center justify-between group cursor-pointer ${isActive ? 'bg-white/10 border-white/20 text-white shadow-lg' : 'bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-gray-200'}`;
+                
+                btn.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden flex-1" onclick="loadSession('${session.id}')">
+                        <i class="ph-fill ph-chat-teardrop-text ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-gray-500'} text-lg"></i>
+                        <span id="title-span-${session.id}" class="truncate font-medium">${session.title}</span>
+                        <input id="title-input-${session.id}" type="text" class="hidden bg-black/40 border border-white/20 rounded px-2 py-0.5 text-xs text-white focus:outline-none focus:border-purple-500 flex-1 min-w-0 font-medium" value="${session.title}" onclick="event.stopPropagation()">
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100 ${session.pinned ? 'text-yellow-400 opacity-100' : 'text-gray-400 hover:text-yellow-400'}" onclick="togglePinSession('${session.id}', event)" title="${session.pinned ? 'Unpin' : 'Pin'} Memory">
+                            <i class="${session.pinned ? 'ph-fill' : 'ph'} ph-push-pin text-sm"></i>
+                        </button>
+                        <button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100 text-gray-400 hover:text-white" onclick="renameSession('${session.id}', event)" title="Rename Memory" id="rename-btn-${session.id}">
+                            <i class="ph ph-pencil-simple text-sm"></i>
+                        </button>
+                        <button class="p-1 opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100" onclick="deleteSession('${session.id}', event)" title="Delete Memory">
+                            <i class="ph ph-trash text-red-400 hover:text-red-300"></i>
+                        </button>
+                    </div>
+                `;
+                els.chatHistoryList.appendChild(btn);
+            });
+        }
+
+        function startNewChat() {
+            if(state.isGenerating) return;
+            state.currentSessionId = null;
+            els.messagesWrapper.innerHTML = '';
+            els.messagesWrapper.classList.add('hidden');
+            els.welcomeScreen.classList.remove('hidden');
+            updateSidebarHistory(); 
+            if(window.innerWidth <= 768) toggleSidebar();
+        }
+
+        function clearAllChats() {
+            state.sessions = [];
+            state.currentSessionId = null;
+            saveSessions();
+            startNewChat();
+            showToast("All memories securely wiped.");
+        }
+
+        function exportChat() {
+            const session = state.sessions.find(s => s.id === state.currentSessionId);
+            if(!session || session.messages.length === 0) return showToast("No active chat to export.");
+            
+            let txt = `ADVANCED AI - SESSION EXPORT (${new Date(session.date).toLocaleString()})\n----------------------------\n\n`;
+            session.messages.forEach(m => txt += `[${m.role.toUpperCase()}]:\n${m.content}\n\n`);
+            const blob = new Blob([txt], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Advanced_AI_Session.txt";
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Session exported securely.");
+        }
+
+        async function downloadSiblingImage(btn) {
+            const img = btn.closest('.relative').querySelector('img');
+            if (!img) return;
+            try {
+                showToast("Downloading image...", "info");
+                const res = await fetch(img.src);
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Advanced_AI_Image_${Date.now()}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast("Image downloaded successfully.", "info");
+            } catch (e) {
+                console.error(e);
+                const a = document.createElement('a');
+                a.href = img.src;
+                a.target = '_blank';
+                a.download = `Advanced_AI_Image_${Date.now()}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showToast("Downloading image in new tab.", "info");
+            }
+        }
+
+        function initSpatialParallax() {
+            const orb1 = document.getElementById('orb-1');
+            const orb2 = document.getElementById('orb-2');
+            let targetX = window.innerWidth / 2, targetY = window.innerHeight / 2;
+            let currentX = window.innerWidth / 2, currentY = window.innerHeight / 2;
+            const ease = 0.08; 
+            
+            document.addEventListener('mousemove', (e) => {
+                targetX = e.clientX;
+                targetY = e.clientY;
+            });
+
+            function lerp() {
+                currentX += (targetX - currentX) * ease;
+                currentY += (targetY - currentY) * ease;
+                
+                const pX = (currentX - window.innerWidth / 2) * 0.05;
+                const pY = (currentY - window.innerHeight / 2) * 0.05;
+                
+                if (orb1) orb1.style.transform = `translate3d(${pX}px, ${pY}px, 0)`;
+                if (orb2) orb2.style.transform = `translate3d(${-pX}px, ${-pY}px, 0)`;
+
+                requestAnimationFrame(lerp);
+            }
+            lerp();
+        }
+
+        function initCanvasBg() {
+            const canvas = document.getElementById('bg-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+            
+            function resize() { 
+                w = canvas.width = window.innerWidth; 
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+            
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2;
+                    this.speedX = Math.random() * 0.4 - 0.2;
+                    this.speedY = Math.random() * 0.4 - 0.2;
+                    this.opacity = Math.random() * 0.5 + 0.1;
+                }
+                update() {
+                    this.x += this.speedX; 
+                    this.y += this.speedY;
+                    if (this.x > w) this.x = 0; if (this.x < 0) this.x = w;
+                    if (this.y > h) this.y = 0; if (this.y < 0) this.y = h;
+                }
+            }
+            for (let i = 0; i < 35; i++) particles.push(new Particle());
+            
+            function animate() {
+                if (!state.neuralBgEnabled) {
+                    requestAnimationFrame(animate);
+                    return; 
+                }
+
+                ctx.clearRect(0, 0, w, h);
+                
+                for (let i = 0; i < particles.length; i++) {
+                    let p = particles[i];
+                    p.update(); 
+                    
+                    ctx.fillStyle = window.themeColorCache; 
+                    ctx.globalAlpha = p.opacity;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        let p2 = particles[j];
+                        let dx = p.x - p2.x;
+                        let dy = p.y - p2.y;
+                        let dist = Math.sqrt(dx*dx + dy*dy);
+                        
+                        if (dist < 150) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = window.themeColorCache;
+                            ctx.globalAlpha = (1 - dist/150) * 0.2;
+                            ctx.lineWidth = 0.8;
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1.0; 
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
