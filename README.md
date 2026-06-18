@@ -3,8 +3,7 @@ README.md
 
 Welcome to the **Advanced AI Neural Interface**, an ultra-premium, feature-rich, single-page conversational application built using modern web standards. It is engineered with premium frosted glassmorphism visuals, smooth hardware-accelerated animations, and robust developer utility controls.
 
-## Use Api key as : AIzaSyDbaziTLW1BE9RtRUm57ZEHw-RuGECYBCw
-Auto config key not working or else Use yours own api key
+# Auto config key is not working or else Use yours own api key
 
 This project is ready to be opened instantly in **Visual Studio Code** and previewed live using any standard web hosting extension (e.g., *Live Server*).
 
