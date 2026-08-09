@@ -12,6 +12,8 @@ Live code sandbox · Multi-session history · Arena comparison · Voice dictatio
 
 </div>
 
+## Auto Pilot Mode getting Rate Limits Please use Models 
+
 ---
 
 ## What Is This?
