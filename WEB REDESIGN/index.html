@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Advanced AI</title>
+    <meta name="description" content="Advanced AI - Premium AI chatbot powered by free OpenRouter models with live code sandbox, prompt vault, and Apple-grade UI.">
+    
+    <!-- External Resources -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', '-apple-system', 'sans-serif'], mono: ['"Fira Code"', 'monospace'] },
+                    animation: {
+                        'spin-slow': 'spin 18s linear infinite',
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-purple text-gray-100 flex flex-col h-screen overflow-hidden selection:bg-[var(--theme-from)]">
+
+    <!-- Ambient Glow Background -->
+    <div id="ambient-glow"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- HISTORY SIDEBAR DRAWER                                      -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div id="history-overlay" class="history-overlay" onclick="toggleHistorySidebar()"></div>
+    <div id="history-sidebar">
+        <div class="p-5 border-b border-white/10 flex justify-between items-center bg-white/5 shrink-0">
+            <h3 class="font-black text-white text-base flex items-center gap-2">
+                <i class="ph-bold ph-chats-teardrop text-[var(--theme-from)]"></i> Conversations
+            </h3>
+            <button onclick="toggleHistorySidebar()" class="text-gray-400 hover:text-white transition p-1.5 rounded-lg hover:bg-white/10">
+                <i class="ph-bold ph-x text-lg"></i>
+            </button>
+        </div>
+        <div id="history-list" class="flex-1 overflow-y-auto custom-scrollbar p-2"></div>
+        <div class="p-4 border-t border-white/10 shrink-0">
+            <button onclick="startNewSession(); toggleHistorySidebar();" class="w-full py-3 rounded-xl bg-[var(--theme-from)] hover:brightness-110 text-white font-black text-sm flex items-center justify-center gap-2 transition shadow-lg">
+                <i class="ph-bold ph-plus"></i> New Chat
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- MAIN WORKSPACE                                              -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="flex-1 flex flex-col h-full relative z-10 w-full max-w-[1500px] mx-auto">
+        
+        <!-- Header Bar -->
+        <header class="h-16 flex items-center justify-between px-4 sm:px-6 z-30 sticky top-0 bg-gradient-to-b from-black/95 via-black/80 to-transparent backdrop-blur-md border-b border-white/10 shrink-0">
+            
+            <!-- Left: Menu + Branding -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleHistorySidebar()" class="text-gray-400 hover:text-white p-2 rounded-xl hover:bg-white/10 transition group" title="Chat History">
+                    <i class="ph-bold ph-list text-xl group-hover:text-[var(--theme-from)] transition"></i>
+                </button>
+                <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-[var(--theme-from)] to-cyan-500 p-[2px] shadow-lg shrink-0">
+                    <div class="w-full h-full bg-black/90 rounded-2xl flex items-center justify-center">
+                        <i class="ph-fill ph-aperture text-[var(--theme-from)] text-xl animate-spin-slow"></i>
+                    </div>
+                </div>
+                <div class="hidden sm:block">
+                    <h1 class="font-extrabold text-white text-lg tracking-tight leading-none">Advanced AI</h1>
+                    <div class="flex items-center gap-1 mt-0.5 text-[11px] text-gray-400 font-bold">
+                        <i class="ph-fill ph-cpu text-[var(--theme-from)]"></i>
+                        <span id="header-active-model">Auto-Pilot Mode</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Dynamic Island -->
+            <div class="dynamic-island hidden md:flex" id="dynamic-island">
+                <div class="island-dot green" id="di-dot"></div>
+                <span class="text-xs font-black text-white tracking-wide" id="di-text">Ready</span>
+            </div>
+
+            <!-- Right: Status + Settings -->
+            <div class="flex items-center gap-2">
+                <button onclick="openSettings('tab-core')" id="header-key-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-[11px] font-black text-amber-300 shadow transition">
+                    <i class="ph-fill ph-key text-sm" id="header-key-icon"></i>
+                    <span id="header-key-text">API Key</span>
+                </button>
+                <button onclick="openSettings('tab-core')" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-gray-200 shadow transition" title="Settings (Ctrl+S)">
+                    <i class="ph-bold ph-gear text-lg text-[var(--theme-from)]"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Scroll Area -->
+        <div id="chat-container" class="flex-1 overflow-y-auto px-4 sm:px-10 md:px-20 lg:px-32 pt-6 pb-64 scroll-smooth custom-scrollbar">
+            
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="max-w-2xl mx-auto flex flex-col justify-center items-center text-center animate-fade-in" style="min-height: 55vh;">
+                
+                <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-[var(--theme-from)] via-pink-500 to-cyan-400 p-0.5 shadow-[0_0_50px_rgba(168,85,247,0.3)] mb-6 animate-float">
+                    <div class="w-full h-full bg-black/95 rounded-3xl flex items-center justify-center">
+                        <i class="ph-fill ph-aperture text-4xl text-white animate-spin-slow"></i>
+                    </div>
+                </div>
+
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-3 tracking-tight delay-100 animate-fade-in">
+                    Advanced <span class="bg-gradient-to-r from-[var(--theme-from)] via-pink-400 to-cyan-400 bg-clip-text text-transparent">AI</span>
+                </h2>
+                
+                <p class="text-lg md:text-xl font-semibold text-gray-400 mb-8 delay-200 animate-fade-in">How can I help you today?</p>
+
+                <!-- Persona Quick Switcher -->
+                <div class="flex flex-wrap items-center justify-center gap-2 text-xs font-bold delay-200 animate-fade-in">
+                    <span class="text-gray-500 mr-1 flex items-center gap-1"><i class="ph-fill ph-mask-happy text-[var(--theme-from)]"></i> Tone:</span>
+                    <button onclick="setPersona('default')" class="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/15 transition text-gray-300">General</button>
+                    <button onclick="setPersona('coder')" class="px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition text-cyan-300 flex items-center gap-1"><i class="ph-bold ph-code"></i> Coder</button>
+                    <button onclick="setPersona('consultant')" class="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition text-amber-300 flex items-center gap-1"><i class="ph-bold ph-briefcase"></i> Consultant</button>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div id="messages-container" class="max-w-4xl mx-auto w-full"></div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- FLOATING CHAT INPUT CONSOLE                                 -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div class="fixed bottom-0 left-0 right-0 z-40 px-4 pb-5 pt-3 bg-gradient-to-t from-black via-black/95 to-transparent pointer-events-none">
+            <div class="max-w-4xl mx-auto pointer-events-auto">
+                
+                <!-- Quick Tools Strip -->
+                <div class="quick-tools-strip mb-2.5 px-1">
+                    <!-- Model Selector -->
+                    <div class="flex items-center bg-black/80 p-1 rounded-xl border border-white/15 shadow shrink-0">
+                        <select id="chat-mode-selector" onchange="selectModel(this.value)" class="bg-transparent px-2 py-1.5 text-[11px] font-bold text-gray-300 outline-none cursor-pointer appearance-none pr-6" style="background-image: url('data:image/svg+xml;utf8,<svg fill=%22gray%22 height=%2210%22 viewBox=%220 0 10 10%22 xmlns=%22http://www.w3.org/2000/svg%22><polygon points=%220,3 10,3 5,8%22/></svg>'); background-repeat: no-repeat; background-position: right 6px center;">
+                            <option value="auto">✨ Auto-Pilot</option>
+                            <option value="poolside/laguna-xs-2.1:free">💻 Laguna XS 2.1</option>
+                            <option value="nvidia/nemotron-3-ultra-550b-a55b:free">🧠 Nemotron Ultra</option>
+                            <option value="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free">👁️ Nemotron Omni</option>
+                            <option value="google/gemma-4-26b-a4b-it:free">💬 Gemma 4</option>
+                            <option value="openai/gpt-oss-20b:free">⚡ GPT-OSS 20B</option>
+                        </select>
+                    </div>
+
+                    <!-- Feature Quick Tools -->
+                    <button class="quick-tool-btn border-amber-500/30 text-amber-200" onclick="selectAndRunPrompt(encodeURIComponent('Act as an Executive Consultant. Write a comprehensive Executive Summary Report analyzing current market trends in AI technology. Include an introduction, 3 key findings backed by theoretical data, and a strategic conclusion.'))">
+                        <i class="ph-fill ph-file-text text-amber-400"></i> Report
+                    </button>
+                    <button class="quick-tool-btn" onclick="selectAndRunPrompt(encodeURIComponent('Generate a professional PowerPoint presentation outline with 10 slides covering the future of AI in Enterprise. For each slide provide a Title, 3 bullet points, and speaker notes.'))">
+                        <i class="ph-fill ph-presentation-chart text-pink-400"></i> PPT
+                    </button>
+                    <button class="quick-tool-btn" onclick="selectAndRunPrompt(encodeURIComponent('Write a fully functioning, beautiful interactive web application using HTML, Tailwind CSS, and JavaScript. Provide all runnable code in a single complete HTML file so I can run it live in the Sandbox. Make the design stunning with dark mode and smooth animations.'))">
+                        <i class="ph-fill ph-code-block text-cyan-400"></i> Web Code
+                    </button>
+                    <button class="quick-tool-btn border-[var(--theme-from)]/30 bg-[var(--theme-from)]/10 text-white" onclick="document.getElementById('prompt-matrix-modal').classList.add('active')">
+                        <i class="ph-fill ph-magic-wand text-[var(--theme-from)]"></i> Prompts
+                    </button>
+                </div>
+
+                <!-- Main Input Box -->
+                <div class="glass-panel p-2.5 sm:p-3 rounded-[2rem] border border-white/20 shadow-2xl flex items-end gap-1.5 sm:gap-2 bg-black/95 transition-all duration-300">
+                    
+                    <input type="file" id="file-upload" class="hidden" accept="image/*,.pdf,.txt,.md,.csv,.json">
+                    <button onclick="document.getElementById('file-upload').click()" class="text-gray-400 hover:text-white p-3 rounded-2xl hover:bg-white/10 transition shrink-0" title="Attach File">
+                        <i class="ph-bold ph-paperclip text-lg"></i>
+                    </button>
+
+                    <button onclick="toggleMicrophoneDictation()" id="mic-dictation-btn" class="text-gray-400 hover:text-white p-3 rounded-2xl hover:bg-white/10 transition shrink-0 hidden sm:flex" title="Voice Dictation">
+                        <i class="ph-bold ph-microphone text-lg"></i>
+                    </button>
+
+                    <div class="flex-1 flex flex-col relative">
+                        <div id="file-name-label" class="hidden absolute -top-9 left-1 bg-black/90 border border-white/20 shadow-lg text-white text-[11px] font-bold px-3 py-1.5 rounded-xl truncate max-w-[200px] items-center gap-1.5 z-10">
+                            <i class="ph-fill ph-file-text text-[var(--theme-from)]"></i> <span></span>
+                        </div>
+                        <textarea id="chat-input" rows="1" placeholder="Message Advanced AI..." 
+                                  class="w-full bg-transparent text-white placeholder-gray-500 px-2 py-3 outline-none resize-none font-medium text-sm md:text-base max-h-40 overflow-y-auto custom-scrollbar"></textarea>
+                    </div>
+                    
+                    <button onclick="sendMessage()" id="send-button" class="send-btn idle shrink-0" title="Send Message (Enter)">
+                        <i class="ph-bold ph-arrow-up text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="flex justify-center mt-2 text-[10px] font-bold text-gray-600">
+                    Advanced AI can make mistakes. Check important info.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SETTINGS MODAL                                              -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div id="settings-modal" class="modal-overlay" style="z-index: 9000;">
+        <div class="absolute inset-0" onclick="closeSettings()"></div>
+        <div class="glass-panel w-full max-w-4xl max-h-[92vh] flex flex-col rounded-[2rem] relative z-10 border border-white/20 shadow-2xl bg-black/95 modal-card">
+            
+            <!-- Settings Header -->
+            <div class="flex items-center justify-between p-5 sm:p-6 border-b border-white/10 bg-white/5 shrink-0 rounded-t-[2rem]">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-[var(--theme-from)] to-cyan-500 p-0.5 shadow-lg shrink-0">
+                        <div class="w-full h-full bg-black rounded-2xl flex items-center justify-center">
+                            <i class="ph-bold ph-sliders-horizontal text-xl text-white"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-white tracking-tight">Settings</h3>
+                        <p class="text-[11px] text-gray-400 font-medium">API Key, Models, Appearance</p>
+                    </div>
+                </div>
+                <button onclick="closeSettings()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/15 bg-white/5 border border-white/10 transition">
+                    <i class="ph-bold ph-x text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="flex border-b border-white/10 px-4 sm:px-6 shrink-0 overflow-x-auto bg-black/60 custom-scrollbar gap-1">
+                <button class="tab-btn active px-4 py-3 text-xs font-black text-white border-b-2 border-[var(--theme-from)] transition whitespace-nowrap" onclick="switchTab(event, 'tab-core')">
+                    <i class="ph-bold ph-key mr-1"></i> API & Models
+                </button>
+                <button class="tab-btn px-4 py-3 text-xs font-bold text-gray-400 border-b-2 border-transparent transition whitespace-nowrap" onclick="switchTab(event, 'tab-visuals')">
+                    <i class="ph-bold ph-palette mr-1"></i> Appearance
+                </button>
+                <button class="tab-btn px-4 py-3 text-xs font-bold text-gray-400 border-b-2 border-transparent transition whitespace-nowrap" onclick="switchTab(event, 'tab-about')">
+                    <i class="ph-bold ph-info mr-1"></i> About
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="flex-1 overflow-y-auto p-5 sm:p-7 custom-scrollbar text-left">
+                
+                <!-- TAB: API Key & Models -->
+                <div id="tab-core" class="tab-content" style="display: block;">
+                    
+                    <!-- API Key Setup Card -->
+                    <div class="bg-gradient-to-br from-amber-950/30 via-black/60 to-purple-950/20 p-5 sm:p-6 rounded-2xl border border-amber-500/25 mb-7">
+                        <label class="text-base font-black text-white flex items-center gap-2 mb-4">
+                            <i class="ph-fill ph-key text-amber-400 text-xl"></i> OpenRouter API Key
+                        </label>
+                        
+                        <!-- Step-by-step Instructions -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mb-5">
+                            <div class="bg-white/5 p-3.5 rounded-xl border border-white/10">
+                                <div class="font-extrabold text-amber-400 mb-1">1. Get Free Account</div>
+                                <p class="text-gray-300">Go to <a href="https://openrouter.ai/keys" target="_blank" rel="noopener" class="text-amber-400 underline hover:text-amber-300">openrouter.ai/keys</a> and create a free account.</p>
+                            </div>
+                            <div class="bg-white/5 p-3.5 rounded-xl border border-white/10">
+                                <div class="font-extrabold text-cyan-400 mb-1">2. Create API Key</div>
+                                <p class="text-gray-300">Click "Create Key". Copy the key that starts with <code class="text-cyan-300 bg-black/60 px-1 rounded text-[10px]">sk-or-v1-...</code></p>
+                            </div>
+                            <div class="bg-white/5 p-3.5 rounded-xl border border-white/10">
+                                <div class="font-extrabold text-emerald-400 mb-1">3. Paste Below</div>
+                                <p class="text-gray-300">Paste the key in the box below. It is stored 100% locally on your device.</p>
+                            </div>
+                        </div>
+
+                        <input type="text" id="set-api-key" class="w-full bg-black border border-white/15 rounded-xl py-3 px-4 text-white font-mono text-sm outline-none focus:border-[var(--theme-from)] focus:ring-1 focus:ring-[var(--theme-from)]/50 transition mb-3" placeholder="sk-or-v1-...">
+                        <button onclick="saveKeyFromSettings()" class="w-full py-3 btn-primary-gradient rounded-xl text-white font-black text-sm tracking-wide shadow-lg">
+                            <i class="ph-bold ph-shield-check mr-1"></i> Save API Key
+                        </button>
+                        <div id="key-save-success" class="hidden mt-3 p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-sm font-bold text-emerald-400 items-center justify-center gap-2">
+                            <i class="ph-fill ph-check-circle"></i> Key saved securely to local storage
+                        </div>
+                    </div>
+
+                    <!-- Model Selection Grid -->
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-xs font-black text-gray-200 uppercase tracking-wider">Select AI Model</h4>
+                            <button onclick="toggleArenaMode()" id="arena-toggle-btn" class="px-3 py-1.5 rounded-xl bg-white/10 text-[11px] text-white font-bold hover:bg-white/20 transition border border-white/10">
+                                <i class="ph-bold ph-sword mr-1"></i> Arena Mode
+                            </button>
+                        </div>
+                        <div id="models-selection-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                    </div>
+                </div>
+
+                <!-- TAB: Appearance -->
+                <div id="tab-visuals" class="tab-content" style="display: none;">
+                    <h4 class="text-xs font-black text-gray-200 uppercase tracking-wider mb-5">Color Theme</h4>
+                    <div class="grid grid-cols-5 gap-3 mb-8">
+                        <button onclick="setTheme('purple')" class="p-5 rounded-2xl border-2 border-white/10 hover:border-purple-500 transition text-center group">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 mx-auto group-hover:scale-110 transition shadow-lg"></div>
+                            <div class="text-[10px] font-bold text-gray-400 mt-2">Purple</div>
+                        </button>
+                        <button onclick="setTheme('cyan')" class="p-5 rounded-2xl border-2 border-white/10 hover:border-cyan-500 transition text-center group">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 mx-auto group-hover:scale-110 transition shadow-lg"></div>
+                            <div class="text-[10px] font-bold text-gray-400 mt-2">Cyan</div>
+                        </button>
+                        <button onclick="setTheme('emerald')" class="p-5 rounded-2xl border-2 border-white/10 hover:border-emerald-500 transition text-center group">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 mx-auto group-hover:scale-110 transition shadow-lg"></div>
+                            <div class="text-[10px] font-bold text-gray-400 mt-2">Emerald</div>
+                        </button>
+                        <button onclick="setTheme('amber')" class="p-5 rounded-2xl border-2 border-white/10 hover:border-amber-500 transition text-center group">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 mx-auto group-hover:scale-110 transition shadow-lg"></div>
+                            <div class="text-[10px] font-bold text-gray-400 mt-2">Amber</div>
+                        </button>
+                        <button onclick="setTheme('rose')" class="p-5 rounded-2xl border-2 border-white/10 hover:border-rose-500 transition text-center group">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-rose-500 to-rose-700 mx-auto group-hover:scale-110 transition shadow-lg"></div>
+                            <div class="text-[10px] font-bold text-gray-400 mt-2">Rose</div>
+                        </button>
+                    </div>
+                    
+                    <h4 class="text-xs font-black text-gray-200 uppercase tracking-wider mb-4">Sound Effects</h4>
+                    <div class="flex items-center justify-between bg-white/5 p-4 rounded-xl border border-white/10">
+                        <span class="text-sm font-bold text-gray-300"><i class="ph-bold ph-speaker-high mr-2 text-[var(--theme-from)]"></i> UI Sound Effects</span>
+                        <button onclick="toggleSound()" id="sound-toggle-btn" class="px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-xs font-black text-emerald-400 transition">ON</button>
+                    </div>
+                </div>
+                
+                <!-- TAB: About -->
+                <div id="tab-about" class="tab-content" style="display: none;">
+                    <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-center mb-6">
+                        <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-[var(--theme-from)] to-cyan-400 p-0.5 mx-auto mb-4 shadow-lg">
+                            <div class="w-full h-full bg-black rounded-3xl flex items-center justify-center">
+                                <i class="ph-fill ph-aperture text-2xl text-white animate-spin-slow"></i>
+                            </div>
+                        </div>
+                        <h4 class="text-xl font-black text-white mb-1">Advanced AI</h4>
+                        <p class="text-xs text-emerald-400 font-extrabold mb-4">Version 6.0</p>
+                        <p class="text-sm text-gray-400 leading-relaxed font-medium max-w-md mx-auto">
+                            Premium AI chatbot with Apple-grade fluid animations, Auto-Pilot intelligent model routing, live code sandbox, 50+ prompt templates, and 13 free OpenRouter models.
+                        </p>
+                    </div>
+                    
+                    <h4 class="text-xs font-black text-gray-200 uppercase tracking-wider mb-3">Key Features</h4>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center gap-2"><i class="ph-fill ph-cpu text-purple-400"></i><span class="text-gray-300 font-medium">13 Free AI Models</span></div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center gap-2"><i class="ph-fill ph-code-block text-cyan-400"></i><span class="text-gray-300 font-medium">Live Code Sandbox</span></div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center gap-2"><i class="ph-fill ph-magic-wand text-pink-400"></i><span class="text-gray-300 font-medium">50+ Prompt Templates</span></div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center gap-2"><i class="ph-fill ph-microphone text-emerald-400"></i><span class="text-gray-300 font-medium">Voice Dictation</span></div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center gap-2"><i class="ph-fill ph-shield-check text-amber-400"></i><span class="text-gray-300 font-medium">100% Local Privacy</span></div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/10 flex items-center gap-2"><i class="ph-fill ph-palette text-rose-400"></i><span class="text-gray-300 font-medium">5 Color Themes</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- PROMPT VAULT MODAL                                          -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div id="prompt-matrix-modal" class="modal-overlay" style="z-index: 9100;">
+        <div class="absolute inset-0" onclick="document.getElementById('prompt-matrix-modal').classList.remove('active')"></div>
+        <div class="glass-panel w-full max-w-5xl max-h-[88vh] flex flex-col rounded-[2rem] relative z-10 border border-white/20 shadow-2xl bg-black/95 modal-card">
+            <div class="flex items-center justify-between p-5 border-b border-white/10 bg-white/5 shrink-0 rounded-t-[2rem]">
+                <h3 class="text-lg font-black text-white flex items-center gap-2"><i class="ph-fill ph-magic-wand text-pink-400"></i> Prompt Vault <span class="text-xs font-bold text-gray-400 ml-1">(50 Templates)</span></h3>
+                <button onclick="document.getElementById('prompt-matrix-modal').classList.remove('active')" class="text-gray-400 p-2 hover:bg-white/10 rounded-full transition"><i class="ph-bold ph-x text-lg"></i></button>
+            </div>
+            <div id="prompt-matrix-grid" class="flex-1 overflow-y-auto p-5 custom-scrollbar grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- LIVE CODE SANDBOX MODAL                                     -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div id="sandbox-modal" class="modal-overlay" style="z-index: 9500; background: rgba(0,0,0,0.92);">
+        <div class="absolute inset-0" onclick="closeSandbox()"></div>
+        <div class="glass-panel w-full max-w-[1450px] h-[92vh] flex flex-col rounded-[2rem] relative z-10 border border-white/20 shadow-2xl bg-black/95 modal-card overflow-hidden">
+            <!-- Sandbox Header -->
+            <div class="flex flex-col sm:flex-row items-center justify-between px-5 py-3 border-b border-white/10 bg-white/5 gap-2 shrink-0 rounded-t-[2rem]">
+                <h3 class="font-extrabold text-white text-sm flex items-center gap-2"><i class="ph-fill ph-code-block text-[var(--theme-from)]"></i> Live Code Sandbox</h3>
+                <div class="flex items-center gap-1.5 bg-black/60 p-1 rounded-xl border border-white/10">
+                    <button onclick="switchSandboxViewport('desktop')" id="btn-view-desktop" class="px-3 py-1.5 rounded-lg text-[11px] font-bold text-white bg-[var(--theme-from)]/30 border border-[var(--theme-from)]">Desktop</button>
+                    <button onclick="switchSandboxViewport('tablet')" id="btn-view-tablet" class="px-3 py-1.5 rounded-lg text-[11px] font-bold text-gray-300">Tablet</button>
+                    <button onclick="switchSandboxViewport('phone')" id="btn-view-phone" class="px-3 py-1.5 rounded-lg text-[11px] font-bold text-gray-300">Phone</button>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="runSandboxCode()" class="px-3 py-1.5 bg-[var(--theme-from)] hover:brightness-110 rounded-lg text-[11px] font-black text-white shadow transition"><i class="ph-bold ph-play mr-1"></i>Run</button>
+                    <button onclick="copySandboxCode()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-[11px] font-bold text-white transition"><i class="ph-bold ph-copy mr-1"></i>Copy</button>
+                    <button onclick="downloadSandboxZip()" class="px-3 py-1.5 bg-[var(--theme-from)]/20 hover:bg-[var(--theme-from)]/40 border border-[var(--theme-from)]/50 rounded-lg text-[11px] font-bold text-[var(--theme-from)] transition"><i class="ph-bold ph-file-zip mr-1"></i>ZIP</button>
+                    <button onclick="closeSandbox()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-[11px] font-bold text-white transition">Close</button>
+                </div>
+            </div>
+            <!-- Sandbox Tabs -->
+            <div class="flex border-b border-white/10 px-5 bg-black/50 shrink-0">
+                <button onclick="switchSandboxTab('preview')" id="tab-sb-preview" class="px-4 py-2.5 text-xs font-black text-cyan-400 border-b-2 border-cyan-400 flex items-center gap-1"><i class="ph-bold ph-eye"></i> Preview</button>
+                <button onclick="switchSandboxTab('code')" id="tab-sb-code" class="px-4 py-2.5 text-xs font-bold text-gray-400 hover:text-white transition border-b-2 border-transparent flex items-center gap-1"><i class="ph-bold ph-code"></i> Code</button>
+                <button onclick="switchSandboxTab('console')" id="tab-sb-console" class="px-4 py-2.5 text-xs font-bold text-gray-400 hover:text-white transition border-b-2 border-transparent flex items-center gap-1"><i class="ph-bold ph-terminal"></i> Console</button>
+            </div>
+            <!-- Sandbox Content -->
+            <div class="flex-1 overflow-hidden relative bg-black/80 flex p-3 justify-center">
+                <div id="sandbox-preview-wrapper" class="w-full h-full flex justify-center items-start overflow-auto">
+                    <div id="sandbox-viewport-container" class="w-full h-full sandbox-viewport-desktop flex justify-center items-start">
+                        <iframe id="sandbox-preview-iframe" class="bg-white rounded-xl shadow-[0_0_40px_rgba(0,0,0,0.5)]" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+                    </div>
+                </div>
+                <div id="sandbox-code-wrapper" class="w-full h-full rounded-xl overflow-hidden border border-white/10" style="display: none;">
+                    <!-- File Explorer Sidebar -->
+                    <div class="w-48 bg-[#0a0a10] border-r border-white/10 flex flex-col shrink-0">
+                        <div class="p-3 border-b border-white/10 flex items-center justify-between">
+                            <span class="text-[11px] font-black text-gray-400 uppercase tracking-wider">Project Files</span>
+                            <button onclick="createNewFile()" class="text-gray-400 hover:text-white transition" title="New File"><i class="ph-bold ph-plus"></i></button>
+                        </div>
+                        <div id="sandbox-file-list" class="flex-1 overflow-y-auto custom-scrollbar p-2 flex flex-col gap-1">
+                            <!-- Files injected here -->
+                        </div>
+                    </div>
+                    <!-- Editor Area -->
+                    <div class="flex-1 flex flex-col relative bg-[#0a0a10]">
+                        <div class="h-10 bg-white/5 border-b border-white/10 flex items-center justify-between px-4">
+                            <span id="active-file-name" class="text-xs font-bold text-gray-300 flex items-center gap-2"><i class="ph-fill ph-file-code text-[var(--theme-from)]"></i> <span>index.html</span></span>
+                            <button onclick="deleteCurrentFile()" id="delete-file-btn" class="text-red-400 hover:text-red-300 text-xs font-bold hidden transition"><i class="ph-bold ph-trash"></i></button>
+                        </div>
+                        <textarea id="sandbox-code-editor" class="w-full flex-1 bg-transparent text-gray-200 font-mono text-sm p-5 outline-none resize-none custom-scrollbar" spellcheck="false" oninput="updateFileContent(this.value)"></textarea>
+                    </div>
+                </div>
+                <div id="sandbox-console-wrapper" class="w-full h-full flex-col p-4 bg-[#0a0a10] rounded-xl border border-white/10 overflow-auto" style="display: none;">
+                    <div id="sandbox-console-output" class="font-mono text-xs text-gray-300"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- SCRIPTS (Order matters: models -> prompts -> sandbox -> app)-->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <script src="models.js"></script>
+    <script src="prompts.js"></script>
+    <script src="sandbox.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
