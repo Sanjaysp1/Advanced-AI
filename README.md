@@ -1,71 +1,167 @@
-README.md
-# Advanced AI | Premium Neural Interface (Neural Core v3)
+<div align="center">
 
-Welcome to the **Advanced AI Neural Interface**, an ultra-premium, feature-rich, single-page conversational application built using modern web standards. It is engineered with premium frosted glassmorphism visuals, smooth hardware-accelerated animations, and robust developer utility controls.
+# ✦ Advanced AI Interface
 
-# Auto config key is not working, Use yours own api key
+**A zero-build, Apple-grade AI chat studio powered by 14 free OpenRouter models.**  
+Live code sandbox · Multi-session history · Arena comparison · Voice dictation · Prompt vault
 
-This project is ready to be opened instantly in **Visual Studio Code** and previewed live using any standard web hosting extension (e.g., *Live Server*).
+[![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](https://opensource.org/licenses/MIT)
+[![No Build Required](https://img.shields.io/badge/Build-None%20Required-brightgreen.svg)](#)
+[![OpenRouter](https://img.shields.io/badge/Powered%20By-OpenRouter-orange.svg)](https://openrouter.ai)
+[![Zero Telemetry](https://img.shields.io/badge/Telemetry-Zero-blue.svg)](#)
 
----
-
-## 🚀 Key Architectural Features
-
-### 1. Multi-Persona Specialization Core
-Toggle between distinct operational modes, each with tailored UI color schemes, background gradient flow, custom thinking messages, and system instructions:
-*   **General Assistant:** Balanced, elegant, and professional response structures.
-*   **Deep Learning Chat:** Technical net-visualization style, featuring math parsing and structural breakdown explanations.
-*   **Code Generation:** Flawless programmer mode. Generates clean, robust, untruncated scripts inside standard Markdown styling.
-*   **Image Studio:** Rich prompt engine. Local prompt requests automatically route via Pollinations AI open endpoints, generating scenic assets with a customized download utility.
-
-### 2. Live Interactive Execution Sandbox
-A dual-mode sandbox built inside an absolute-positioned glass container:
-*   **Web Sandbox:** Runs HTML, CSS, JavaScript, and React files natively using the iframe's `srcdoc` engine with high-contrast, independent color backing to prevent dark background overlaps.
-*   **Virtual Terminal Emulator:** Executes backend languages (Python, Java, C++, C, Go, Rust, Ruby, and Bash) using the EMKC Piston API v2, writing runtime outputs and compilation errors on a simulated dark-viewport console block.
-*   **Sandbox Editor:** Supports standard in-app editing. Swap from Preview to Edit mode to modify, refactor, and rerun generated code instantly.
-
-### 3. Smart Dictation & Voice Synthesis
-*   **Speech-to-Text Dictation:** Hands-free voice interface featuring automatic continuous recording. Analyzes voice activity and triggers silence-based submission 2 seconds after the user stops speaking.
-*   **Speech Synthesis Output:** Uses HTML5 Web Speech engines to parse a unique `<voice-summary>` tag produced by the model, reading a short overview aloud while pulsing the AI avatar in-sync.
-
-### 4. Interactive File Upload & Document Context
-*   **Context Attachment System:** Upload images or code documents up to 5MB. 
-*   **Chunked Upload Simulation:** Displays smooth progress bar overlays and file metadata chips. 
-*   **Inline Injector:** Text files are appended cleanly inside document boundaries in the prompt envelope, while images are serialized to Base64 data chunks for Gemini multi-modal processing.
-
-### 5. Dynamic CSS Theme Compiler
-*   **Theme Config Parser:** Models can output specialized JSON config payloads wrapped inside `<theme-config>...</theme-config>`.
-*   **Fluid Transitions:** The main thread catches theme-configs to dynamically update CSS root variables, load fonts from Google Fonts APIs on-the-fly, and animate full-screen radial color transitions.
+</div>
 
 ---
 
-## 🛠️ Project Structure
+## What Is This?
 
-The project has been kept clean, unified, and highly portable.
+Advanced AI Interface is a fully client-side AI chat application that runs directly in your browser — no server, no build step, no subscription. Paste a free [OpenRouter](https://openrouter.ai) API key and you get instant access to 14 state-of-the-art models including NVIDIA Nemotron, Google Gemma 4, Poolside Laguna XS, and OpenAI's open-weight GPT model.
 
-```text
-├── index.html        # Unified SPA containing all markup, Tailwind styles, and state scripts.
-└── README.md         # This documentation file.
+The standout feature is the **Multi-File Sandbox IDE**: when the AI generates HTML, CSS, JavaScript, or React code, a single click opens a live interactive preview — with a virtual file explorer, code editor, real-time console, and desktop / tablet / phone viewport modes.
+
+---
+
+## Features at a Glance
+
+### 🤖 AI Chat Engine
+- **14 free OpenRouter models** — NVIDIA Nemotron Ultra/Nano, Gemma 4 26B/31B, Laguna XS 2.1, GPT-OSS 20B, Fish Audio S2.1 Pro, and more
+- **Auto-Pilot Smart Routing** — detects prompt intent (code, vision, analysis) and selects the best model automatically
+- **Real-time streaming** — token-by-token response with live markdown and syntax-highlighted code rendering
+- **Arena Mode** — split-screen comparison of two models responding to the same prompt simultaneously
+- **AI Personas** — swap between Expert Coder, Business Consultant, or Default mode
+
+### 🖥️ Live Code Sandbox IDE
+- Parses multi-file AI output (HTML, CSS, JS, JSX) into a **virtual file system**
+- **React 18 + Babel Standalone** auto-injected — React components run without any setup
+- **Tailwind CSS auto-injection** for AI-generated UIs
+- **Desktop / Tablet (768px) / Phone (375px)** viewport previews
+- Real-time **console log capture** from inside the sandbox iframe
+- **Download as ZIP** — exports the entire virtual project with one click
+
+### 📁 Multi-Session History
+- Persistent sessions saved to `localStorage` — survive browser refreshes
+- **Pin, rename, and delete** sessions from a slide-out sidebar
+- Auto-generates a title from the first message
+
+### 🪄 Prompt Vault
+- 20 expertly engineered templates across six categories: Web Code, Business, Content, Learning, Coding, and Lifestyle
+- One-click execution directly into the chat input
+
+### 🎤 Voice & Audio
+- **Web Speech API** microphone dictation
+- Spatial audio feedback — distinct sounds for click, send, and AI response completion
+- Togglable from settings
+
+### 🔒 Privacy First
+- API key stored **100% locally** in the browser — never transmitted to any third-party server
+- Zero telemetry, zero analytics, zero cloud data retention
+- XSS protection via HTML escaping on all user and AI content
+
+### 🎨 UI & Polish
+- **5 color themes** — Purple, Cyan, Emerald, Amber, Rose
+- Glassmorphism panel design system with spring-physics CSS transitions
+- **Dynamic Island** status indicator (Ready / Thinking / Streaming)
+- Ambient radial background glow that follows the active theme
+- Fully responsive — touch-optimized mobile layout
+- Toast notification system with slide-up animation
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Core | HTML5, CSS3, Vanilla JavaScript (zero build) |
+| Styling | Tailwind CSS via CDN |
+| Icons | Phosphor Icons |
+| Markdown Rendering | Marked.js |
+| React in Sandbox | React 18 UMD + Babel Standalone |
+| Project Export | JSZip (client-side) |
+| AI Provider | OpenRouter API (free tier) |
+
+---
+
+## Getting Started
+
+**1. Clone or download the repository**
+```bash
+git clone https://github.com/your-username/advanced-ai-interface.git
+cd advanced-ai-interface
+```
+
+**2. Open `index.html` in any modern browser**
+
+No `npm install`, no bundler, no server required. Chrome, Edge, Firefox, and Safari all work.
+
+**3. Get a free OpenRouter API key**
+
+Sign up at [openrouter.ai](https://openrouter.ai) — the free tier covers all 14 models in this project.
+
+**4. Paste your key into Settings**
+
+Click the ⚙️ gear icon (or press `Ctrl+S`), navigate to the Core tab, and paste your key. The connection badge turns green immediately.
+
+**5. Start building**
+
+Pick a model, choose a prompt from the Vault, or just start typing. When the AI returns code, hit **▶ Run in Sandbox** to see it live.
+
+---
+
+## Project Structure
+
+```
+advanced-ai-interface/
+├── index.html       — Full application shell & all modal markup
+├── app.js           — Core state, streaming engine, session management, audio synth
+├── sandbox.js       — Virtual file system, multi-file parser, sandbox runtime & export
+├── models.js        — Free model registry & settings UI renderer
+├── prompts.js       — Prompt Vault templates & modal UI
+├── features.js      — Feature catalog data & features modal
+├── styles.css       — Theme variables, glassmorphism, animations, component styles
+└── README.md
 ```
 
 ---
 
-## ⚡ Quick Start Instructions
+## Keyboard Shortcuts
 
-1.  **Open in Editor:** Open this directory folder inside VS Code.
-2.  **Launch Server:** Right-click `index.html` and select **Open with Live Server** (or run `npx serve .` in your terminal).
-3.  **Configure API Key:**
-    *   Click the **Gear Icon** in the top right header to open the *System Settings* panel.
-    *   Input your **Google Gemini API Key** (from [Google AI Studio](https://aistudio.google.com/app/apikey)).
-    *   Alternatively, click **Auto-Configure** to apply a default premium key configuration.
-4.  **Special Modes:** Click the **Sliders Icon** in the bottom input tray to toggle advanced personas or activate the **Reasoning Chain-of-Thought Engine**.
-5.  **Run Code:** When the AI generates python or web app code, hover over the code snippet box and click the cyan **Run** button to open the Live Execution Sandbox!
+| Shortcut | Action |
+|---|---|
+| `Enter` | Send message |
+| `Shift + Enter` | New line in input |
+| `Ctrl / ⌘ + S` | Open / close Settings |
+| `Escape` | Close any open modal or sidebar |
 
 ---
 
-## 🔒 Security & Local Caching
-All memory indexes, session records, and active styles are stored client-side inside standard `localStorage` wrapper structures (`veltrix_sessions` and `veltrix_theme`). To wipe all context memory, open *System Settings* and select the red **Wipe Context Memory** button.
+## Available Models (Free Tier)
+
+| Model | Provider | Context | Specialty |
+|---|---|---|---|
+| Laguna XS 2.1 | Poolside | 262K | Top code agent |
+| Nemotron 3 Ultra 550B | NVIDIA | 32K | Enterprise reasoning |
+| Nemotron 3 Nano 30B | NVIDIA | 256K | Efficient MoE |
+| Nemotron 3 Nano Omni 30B | NVIDIA | 256K | Multimodal reasoning |
+| Nemotron Nano 9B V2 | NVIDIA | 128K | Unified reasoning trace |
+| Nemotron Nano 12B VL | NVIDIA | 128K | Video & doc intelligence |
+| Llama Nemotron Rerank VL | NVIDIA | 10K | Vision RAG reranker |
+| Llama Nemotron Embed VL | NVIDIA | 131K | Multimodal embedder |
+| Nemotron 3 Embed 1B | NVIDIA | 33K | High-throughput search |
+| Nemotron Content Safety | NVIDIA | 128K | AI guardrail |
+| Gemma 4 26B A4B | Google DeepMind | 262K | MoE multimodal |
+| Gemma 4 31B | Google DeepMind | 262K | Dense multimodal |
+| GPT-OSS 20B | OpenAI | 131K | Open-weight, Apache 2.0 |
+| Fish Audio S2.1 Pro | Fish Audio | Standard | Speech synthesis |
 
 ---
 
-*Advanced AI is an independent, single-page luxury interface. Ensure generated code and strategic facts are reviewed prior to production deployment.*
+## License
+
+MIT — free to use, modify, and distribute.
+
+---
+
+<div align="center">
+Built with ❤️ by Sanjay &nbsp;·&nbsp; Powered by <a href="https://openrouter.ai">OpenRouter</a>
+</div>
